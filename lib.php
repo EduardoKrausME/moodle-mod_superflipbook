@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Features supported by the activity.
@@ -218,7 +217,10 @@ function superflipbook_get_completion_state($course, $cm, $userid, $type) {
     if (!$activity) {
         return false;
     }
-    return !empty($activity->completionreading) ? \mod_superflipbook\local\reading_service::is_completed($activity, $userid) : $type;
+    if (!empty($activity->completionreading)) {
+        return \mod_superflipbook\local\reading_service::is_completed($activity, $userid);
+    }
+    return $type;
 }
 
 /**

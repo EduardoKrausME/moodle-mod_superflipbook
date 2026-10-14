@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/superflipbook/backup/moodle2/restore_superflipbook_stepslib.php');
 /**
  * Restore task for Super Flipbook.

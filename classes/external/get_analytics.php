@@ -24,6 +24,7 @@
 
 namespace mod_superflipbook\external;
 
+defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
 /**
