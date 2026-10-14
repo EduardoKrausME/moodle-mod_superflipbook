@@ -12,21 +12,26 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Activity configuration and completion rules.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
-/** Module form. */
+/**
+ * Module form.
+ */
 class mod_superflipbook_mod_form extends moodleform_mod {
-    /** Build the form. */
+    /**
+     * Build the form.
+     */
     public function definition() {
         $mform = $this->_form;
         $mform->addElement('header', 'general', get_string('general'));
@@ -65,7 +70,9 @@ class mod_superflipbook_mod_form extends moodleform_mod {
         $this->add_action_buttons();
     }
 
-    /** Register a custom completion condition for Moodle completion UI. */
+    /**
+     * Register a custom completion condition for Moodle completion UI.
+     */
     public function add_completion_rules() {
         $mform = $this->_form;
         $mform->addElement('advcheckbox', 'completionreading' . $this->get_suffix(),
@@ -74,17 +81,23 @@ class mod_superflipbook_mod_form extends moodleform_mod {
         return ['completionreading' . $this->get_suffix()];
     }
 
-    /** Whether the reading condition is enabled for this activity. */
+    /**
+     * Whether the reading condition is enabled for this activity.
+     */
     public function completion_rule_enabled($data) {
         return !empty($data['completionreading' . $this->get_suffix()]);
     }
 
-    /** Descriptions of active rules. */
+    /**
+     * Descriptions of active rules.
+     */
     public function get_completion_rule_descriptions() {
         return ['completionreading' => get_string('completionreading', 'mod_superflipbook')];
     }
 
-    /** File draft preprocessing. */
+    /**
+     * File draft preprocessing.
+     */
     public function data_preprocessing(&$defaultvalues) {
         if (!empty($this->current->instance)) {
             $draft = file_get_submitted_draft_itemid('pdf');
@@ -94,7 +107,9 @@ class mod_superflipbook_mod_form extends moodleform_mod {
         }
     }
 
-    /** Validate custom controls. */
+    /**
+     * Validate custom controls.
+     */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         if ((int)$data['minpercentage'] < 0 || (int)$data['minpercentage'] > 100) {

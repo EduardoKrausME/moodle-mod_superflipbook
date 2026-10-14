@@ -12,19 +12,23 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Restore activity and optional user evidence.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
-/** Activity restore step. */
+
+/**
+ * Activity restore step.
+ */
 class restore_superflipbook_activity_structure_step extends restore_activity_structure_step {
-    /** Paths. */
+    /**
+     * Paths.
+     */
     protected function define_structure() {
         $paths = [new restore_path_element('superflipbook', '/activity/superflipbook')];
         if ($this->get_setting_value('userinfo')) {
@@ -37,7 +41,9 @@ class restore_superflipbook_activity_structure_step extends restore_activity_str
         }
         return $this->prepare_activity_structure($paths);
     }
-    /** Activity. */
+    /**
+     * Activity.
+     */
     protected function process_superflipbook($data) {
         global $DB;
         $data = (object)$data;
@@ -48,23 +54,33 @@ class restore_superflipbook_activity_structure_step extends restore_activity_str
         $this->apply_activity_instance($newid);
         $this->set_mapping('superflipbook', $oldid, $newid);
     }
-    /** Learner progress. */
+    /**
+     * Learner progress.
+     */
     protected function process_superflipbook_progress($data) {
         $this->restore_personal_record('superflipbook_progress', $data);
     }
-    /** Per-page learner record. */
+    /**
+     * Per-page learner record.
+     */
     protected function process_superflipbook_page($data) {
         $this->restore_personal_record('superflipbook_pages', $data);
     }
-    /** Signed acknowledgement. */
+    /**
+     * Signed acknowledgement.
+     */
     protected function process_superflipbook_ack($data) {
         $this->restore_personal_record('superflipbook_ack', $data);
     }
-    /** Private annotation. */
+    /**
+     * Private annotation.
+     */
     protected function process_superflipbook_bookmark($data) {
         $this->restore_personal_record('superflipbook_bookmarks', $data);
     }
-    /** Insert a personal record for the mapped learner. */
+    /**
+     * Insert a personal record for the mapped learner.
+     */
     private function restore_personal_record($table, $data) {
         global $DB;
         $data = (object)$data;
@@ -75,7 +91,9 @@ class restore_superflipbook_activity_structure_step extends restore_activity_str
             $DB->insert_record($table, $data);
         }
     }
-    /** Restore PDF files and introduction files. */
+    /**
+     * Restore PDF files and introduction files.
+     */
     protected function after_execute() {
         $this->add_related_files('mod_superflipbook', 'content', null);
         $this->add_related_files('mod_superflipbook', 'intro', null);

@@ -12,25 +12,32 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Viewing event.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook\event;
-/** Course module viewed event. */
+/**
+ * Course module viewed event.
+ */
 class course_module_viewed extends \core\event\course_module_viewed {
-    /** Init. */
+    /**
+     * Init.
+     */
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'superflipbook';
     }
-    /** Url. */
+    /**
+     * Url.
+     */
     public function get_url() {
         return new \moodle_url('/mod/superflipbook/view.php', ['id' => $this->contextinstanceid]);
     }

@@ -1,25 +1,46 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
  * List a learner's private bookmarks without leaking other users' notes.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook\external;
 
-defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
-/** Bookmarks query. */
+/**
+ * Bookmarks query.
+ */
 class get_bookmarks extends \external_api {
-    /** Parameters. */
+    /**
+     * Parameters.
+     */
     public static function execute_parameters() {
         return new \external_function_parameters([
             'cmid' => new \external_value(PARAM_INT, 'Course module ID'),
         ]);
     }
-    /** Query bookmarks of current logged in reader only. */
+    /**
+     * Query bookmarks of current logged in reader only.
+     */
     public static function execute($cmid) {
         global $DB, $USER;
         $values = self::validate_parameters(self::execute_parameters(), compact('cmid'));
@@ -35,7 +56,9 @@ class get_bookmarks extends \external_api {
             return ['page' => (int)$record->pagenum, 'note' => $record->note ?? ''];
         }, $rows));
     }
-    /** Return structure. */
+    /**
+     * Return structure.
+     */
     public static function execute_returns() {
         return new \external_multiple_structure(new \external_single_structure([
             'page' => new \external_value(PARAM_INT, 'Page'),

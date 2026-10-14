@@ -5,7 +5,7 @@
 <div class="mod-superflipbook" data-region="reader">
     <div class="sf-reader-header">
         <h2>{{title}}</h2>
-        {{#reportlink}}<a href="{{reporturl}}" class="btn btn-secondary">{{#str}}report, mod_superflipbook{{/str}}</a>{{/reportlink}}
+        {{#reportlink}}<a href="{{{reporturl}}}" class="btn btn-secondary">{{#str}}report, mod_superflipbook{{/str}}</a>{{/reportlink}}
     </div>
     <div class="sf-intro">{{{intro}}}</div>
     <div class="sf-reader-toolbar" role="toolbar" aria-label="{{#str}}toolbar, mod_superflipbook{{/str}}">
@@ -22,7 +22,7 @@
         <button type="button" data-action="search" class="btn btn-secondary">{{#str}}search{{/str}}</button>
         <button type="button" data-action="bookmarklist" class="btn btn-secondary">{{#str}}bookmarks, mod_superflipbook{{/str}}</button>
         <button type="button" data-action="bookmark" class="btn btn-secondary">{{#str}}bookmark, mod_superflipbook{{/str}}</button>
-        {{#allowdownload}}<a href="{{pdfurl}}" class="btn btn-secondary" download>{{#str}}download, mod_superflipbook{{/str}}</a>{{/allowdownload}}
+        {{#allowdownload}}<a href="{{{pdfurl}}}" class="btn btn-secondary" download>{{#str}}download, mod_superflipbook{{/str}}</a>{{/allowdownload}}
         {{#allowprint}}<button type="button" class="btn btn-secondary" data-action="print">{{#str}}print, mod_superflipbook{{/str}}</button>{{/allowprint}}
     </div>
     <div class="sf-book-container">

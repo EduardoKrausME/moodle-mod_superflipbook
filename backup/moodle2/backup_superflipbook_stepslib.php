@@ -12,19 +12,23 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Backup XML structure.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
-/** Backup structure. */
+
+/**
+ * Backup structure.
+ */
 class backup_superflipbook_activity_structure_step extends backup_activity_structure_step {
-    /** Describe activity and optional learner records. */
+    /**
+     * Describe activity and optional learner records.
+     */
     protected function define_structure() {
         $activity = new backup_nested_element('superflipbook', ['id'], ['name', 'intro', 'introformat',
             'revision', 'completionreading', 'minpercentage', 'minseconds', 'requirelastpage', 'requiredpages', 'requireack',

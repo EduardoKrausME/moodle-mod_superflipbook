@@ -12,33 +12,44 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Acknowledgement event.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook\event;
-/** Event for a signed acknowledgement. */
+/**
+ * Event for a signed acknowledgement.
+ */
 class acknowledgement_recorded extends \core\event\base {
-    /** Initialize. */
+    /**
+     * Initialize.
+     */
     protected function init() {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'superflipbook';
     }
-    /** Event name. */
+    /**
+     * Event name.
+     */
     public static function get_name() {
         return get_string('eventacknowledged', 'mod_superflipbook');
     }
-    /** Description. */
+    /**
+     * Description.
+     */
     public function get_description() {
         return "User {$this->userid} acknowledged flipbook {$this->objectid}.";
     }
-    /** URL. */
+    /**
+     * URL.
+     */
     public function get_url() {
         return new \moodle_url('/mod/superflipbook/view.php', ['id' => $this->contextinstanceid]);
     }

@@ -12,27 +12,34 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Moodle native rule-based completion.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook\completion;
 
 use core_completion\activity_custom_completion;
 
-/** Custom completion for all reading conditions. */
+/**
+ * Custom completion for all reading conditions.
+ */
 class custom_completion extends activity_custom_completion {
-    /** Required rule names. */
+    /**
+     * Required rule names.
+     */
     public static function get_defined_custom_rules(): array {
         return ['completionreading'];
     }
 
-    /** Actual reading state. */
+    /**
+     * Actual reading state.
+     */
     public function get_state(string $rule): int {
         global $DB;
         $this->validate_rule($rule);
@@ -41,12 +48,16 @@ class custom_completion extends activity_custom_completion {
             ? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE;
     }
 
-    /** Human-readable rule descriptions. */
+    /**
+     * Human-readable rule descriptions.
+     */
     public function get_custom_rule_descriptions(): array {
         return ['completionreading' => get_string('completionreading', 'mod_superflipbook')];
     }
 
-    /** Moodle completion criteria ordering. */
+    /**
+     * Moodle completion criteria ordering.
+     */
     public function get_sort_order(): array {
         return ['completionview', 'completionreading', 'completionusegrade', 'completionpassgrade'];
     }

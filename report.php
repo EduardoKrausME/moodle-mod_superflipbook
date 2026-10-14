@@ -12,15 +12,16 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Teacher report with page drop-off and auditable acknowledgements.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/group/lib.php');
 $id = required_param('id', PARAM_INT);
@@ -97,12 +98,12 @@ if ($export) {
     $writer->set_filename('superflipbook-' . $activity->id . '-report');
     $writer->add_data(['User ID', 'First name', 'Last name', 'Email', 'Max page', 'Pages',
         'Active seconds', 'Completed', 'Last visit']);
-    foreach ($rows as $row) {
-        $safe = static function($value) {
+    $safe = static function($value) {
         $value = (string)$value;
         return preg_match('/^[\x00-\x20]*[=+\-@]/', $value) ? chr(39) . $value : $value;
     };
-    $writer->add_data([$row->userid, $safe($row->firstname), $safe($row->lastname), $safe($row->email),
+    foreach ($rows as $row) {
+        $writer->add_data([$row->userid, $safe($row->firstname), $safe($row->lastname), $safe($row->email),
             $row->maxpage, $row->totalpages, $row->totalseconds, $row->completed,
             userdate($row->lastview)]);
     }

@@ -12,30 +12,36 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Read learner progress, with access checks.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook\external;
 
-defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
-/** Secure progress query. */
+/**
+ * Secure progress query.
+ */
 class get_progress extends \external_api {
-    /** Parameters. */
+    /**
+     * Parameters.
+     */
     public static function execute_parameters() {
         return new \external_function_parameters([
             'cmid' => new \external_value(PARAM_INT, 'Course module ID'),
         ]);
     }
 
-    /** Execute. */
+    /**
+     * Execute.
+     */
     public static function execute($cmid) {
         global $DB, $USER;
         $values = self::validate_parameters(self::execute_parameters(), ['cmid' => $cmid]);
@@ -49,7 +55,9 @@ class get_progress extends \external_api {
         return \mod_superflipbook\local\reading_service::status($activity, $USER->id);
     }
 
-    /** Return shape. */
+    /**
+     * Return shape.
+     */
     public static function execute_returns() {
         return new \external_single_structure([
             'maxpage' => new \external_value(PARAM_INT, 'Furthest page'),

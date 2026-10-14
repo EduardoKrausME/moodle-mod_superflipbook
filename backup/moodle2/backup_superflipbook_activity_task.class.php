@@ -12,26 +12,35 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Backup task.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/mod/superflipbook/backup/moodle2/backup_superflipbook_stepslib.php');
-/** Activity backup task. */
+/**
+ * Activity backup task.
+ */
 class backup_superflipbook_activity_task extends backup_activity_task {
-    /** Settings. */
-    protected function define_my_settings() {}
-    /** Steps. */
+    /**
+     * Settings.
+     */
+    protected function define_my_settings() {
+    }
+    /**
+     * Steps.
+     */
     protected function define_my_steps() {
         $this->add_step(new backup_superflipbook_activity_structure_step('superflipbook_structure', 'superflipbook.xml'));
     }
-    /** Moodle log file mapping. */
+    /**
+     * Moodle log file mapping.
+     */
     public static function encode_content_links($content) {
         return $content;
     }

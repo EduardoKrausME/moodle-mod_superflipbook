@@ -12,23 +12,27 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Save private reader annotations.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook\external;
 
-defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
-/** Private learner bookmark API. */
+/**
+ * Private learner bookmark API.
+ */
 class save_bookmark extends \external_api {
-    /** Parameters. */
+    /**
+     * Parameters.
+     */
     public static function execute_parameters() {
         return new \external_function_parameters([
             'cmid' => new \external_value(PARAM_INT, 'Course module'),
@@ -36,7 +40,9 @@ class save_bookmark extends \external_api {
             'note' => new \external_value(PARAM_TEXT, 'Private note, up to 2000 characters'),
         ]);
     }
-    /** Store the bookmark for current user only. */
+    /**
+     * Store the bookmark for current user only.
+     */
     public static function execute($cmid, $page, $note) {
         global $DB, $USER;
         $values = self::validate_parameters(self::execute_parameters(),
@@ -62,7 +68,9 @@ class save_bookmark extends \external_api {
         }
         return ['saved' => true];
     }
-    /** Returns. */
+    /**
+     * Returns.
+     */
     public static function execute_returns() {
         return new \external_single_structure([
             'saved' => new \external_value(PARAM_BOOL, 'Success'),

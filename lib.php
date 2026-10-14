@@ -12,15 +12,16 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Activity callbacks for Super Flipbook.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -43,7 +44,7 @@ function superflipbook_supports($feature) {
         case FEATURE_MOD_ARCHETYPE:
             return MOD_ARCHETYPE_RESOURCE;
         case FEATURE_MOD_PURPOSE:
-            return defined('MOD_PURPOSE_CONTENT') ? MOD_PURPOSE_CONTENT : null;
+            return MOD_PURPOSE_CONTENT;
         default:
             return null;
     }
@@ -217,7 +218,7 @@ function superflipbook_get_completion_state($course, $cm, $userid, $type) {
     if (!$activity) {
         return false;
     }
-    return !empty($activity->completionreading) ?\mod_superflipbook\local\reading_service::is_completed($activity, $userid) : $type;
+    return !empty($activity->completionreading) ? \mod_superflipbook\local\reading_service::is_completed($activity, $userid) : $type;
 }
 
 /**

@@ -12,23 +12,27 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * AJAX endpoint to persist a reading heartbeat and acknowledgement.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook\external;
 
-defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
-/** Secure progress endpoint. */
+/**
+ * Secure progress endpoint.
+ */
 class record_progress extends \external_api {
-    /** Parameters. */
+    /**
+     * Parameters.
+     */
     public static function execute_parameters() {
         return new \external_function_parameters([
             'cmid' => new \external_value(PARAM_INT, 'Course module ID'),
@@ -40,7 +44,9 @@ class record_progress extends \external_api {
         ]);
     }
 
-    /** Execute. */
+    /**
+     * Execute.
+     */
     public static function execute($cmid, $page, $pages, $seconds, $acknowledge, $entered = false) {
         global $DB, $USER;
         $values = self::validate_parameters(self::execute_parameters(), compact('cmid', 'page',
@@ -56,7 +62,9 @@ class record_progress extends \external_api {
             $values['page'], $values['pages'], $values['seconds'], $values['acknowledge'], $values['entered']);
     }
 
-    /** Return shape. */
+    /**
+     * Return shape.
+     */
     public static function execute_returns() {
         return get_progress::execute_returns();
     }

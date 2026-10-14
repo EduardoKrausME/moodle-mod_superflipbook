@@ -12,15 +12,16 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Super Flipbook language strings.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 $string['ackconfirm'] = 'I have read and understand the statement above.';
@@ -51,6 +52,7 @@ $string['lastview'] = 'Last viewed';
 $string['learners'] = 'Learners';
 $string['loading'] = 'Loading document...';
 $string['maxpage'] = 'Furthest page';
+$string['messageprovider:acknowledged'] = 'Acknowledgement recorded notifications';
 $string['minpercentage'] = 'Minimum percentage of pages visited';
 $string['minseconds'] = 'Minimum active reading time (seconds)';
 $string['missingpdf'] = 'The PDF file for this activity is missing.';
@@ -93,6 +95,11 @@ $string['resetuserdata'] = 'Delete Super Flipbook reading records';
 $string['search'] = 'Search';
 $string['searchnotfound'] = 'Text not found';
 $string['searchplaceholder'] = 'Find text in PDF';
+$string['superflipbook:addinstance'] = 'Add a Super Flipbook activity';
+$string['superflipbook:download'] = 'Download Super Flipbook PDFs';
+$string['superflipbook:manage'] = 'Manage Super Flipbook activities';
+$string['superflipbook:view'] = 'View Super Flipbook activities';
+$string['superflipbook:viewreports'] = 'View Super Flipbook analytics reports';
 $string['thumbnails'] = 'Thumbnails';
 $string['todate'] = 'To date';
 $string['toolbar'] = 'Reader toolbar';

@@ -12,22 +12,28 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Reading service completion rule tests.
  *
- * @package mod_superflipbook
+ * @package   mod_superflipbook
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_superflipbook;
 
-defined('MOODLE_INTERNAL') || die();
 
-/** Reading rules must be satisfied together and revision-isolated. */
-class reading_service_test extends \advanced_testcase {
-    /** Build an activity database fixture. */
+/**
+ * Reading rules must be satisfied together and revision-isolated.
+ *
+ * @covers \mod_superflipbook\local\reading_service
+ */
+final class reading_service_test extends \advanced_testcase {
+    /**
+     * Build an activity database fixture.
+     */
     private function fixture() {
         global $DB;
         $this->resetAfterTest();
@@ -45,13 +51,17 @@ class reading_service_test extends \advanced_testcase {
         return [$record, $user];
     }
 
-    /** Missing progress cannot satisfy completion. */
+    /**
+     * Missing progress cannot satisfy completion.
+     */
     public function test_requires_actual_progress(): void {
         list($activity, $user) = $this->fixture();
         $this->assertFalse(\mod_superflipbook\local\reading_service::is_completed($activity, $user->id));
     }
 
-    /** Completion requires all conditions, including explicit acknowledgement. */
+    /**
+     * Completion requires all conditions, including explicit acknowledgement.
+     */
     public function test_all_requirements_combined(): void {
         global $DB;
         list($activity, $user) = $this->fixture();
@@ -75,7 +85,9 @@ class reading_service_test extends \advanced_testcase {
         $this->assertFalse(\mod_superflipbook\local\reading_service::is_completed($activity, $user->id));
     }
 
-    /** No bypass with fake or excessively long page heartbeats. */
+    /**
+     * No bypass with fake or excessively long page heartbeats.
+     */
     public function test_rejects_invalid_page_range(): void {
         list($activity, $user) = $this->fixture();
         $this->expectException(\invalid_parameter_exception::class);
