@@ -1,0 +1,46 @@
+{{!
+    @template mod_superflipbook/reader
+    Moodle-native document reader. Labels come exclusively from language strings.
+}}
+<div class="mod-superflipbook" data-region="reader">
+    <div class="sf-reader-header">
+        <h2>{{title}}</h2>
+        {{#reportlink}}<a href="{{reporturl}}" class="btn btn-secondary">{{#str}}report, mod_superflipbook{{/str}}</a>{{/reportlink}}
+    </div>
+    <div class="sf-intro">{{{intro}}}</div>
+    <div class="sf-reader-toolbar" role="toolbar" aria-label="{{#str}}toolbar, mod_superflipbook{{/str}}">
+        <button type="button" data-action="previous" class="btn btn-secondary" aria-label="{{#str}}previouspage, mod_superflipbook{{/str}}">&#8249;</button>
+        <span data-region="page-number" aria-live="polite"></span>
+        <button type="button" data-action="next" class="btn btn-secondary" aria-label="{{#str}}nextpage, mod_superflipbook{{/str}}">&#8250;</button>
+        <button type="button" data-action="zoomout" class="btn btn-secondary">{{#str}}zoomout, mod_superflipbook{{/str}}</button>
+        <button type="button" data-action="zoomin" class="btn btn-secondary">{{#str}}zoomin, mod_superflipbook{{/str}}</button>
+        <button type="button" data-action="fullscreen" class="btn btn-secondary">{{#str}}fullscreen, mod_superflipbook{{/str}}</button>
+        <button type="button" data-action="thumbnails" class="btn btn-secondary">{{#str}}thumbnails, mod_superflipbook{{/str}}</button>
+        <label class="sf-search">{{#str}}search, mod_superflipbook{{/str}}
+            <input type="search" data-region="search" placeholder="{{#str}}searchplaceholder, mod_superflipbook{{/str}}">
+        </label>
+        <button type="button" data-action="search" class="btn btn-secondary">{{#str}}search{{/str}}</button>
+        <button type="button" data-action="bookmarklist" class="btn btn-secondary">{{#str}}bookmarks, mod_superflipbook{{/str}}</button>
+        <button type="button" data-action="bookmark" class="btn btn-secondary">{{#str}}bookmark, mod_superflipbook{{/str}}</button>
+        {{#allowdownload}}<a href="{{pdfurl}}" class="btn btn-secondary" download>{{#str}}download, mod_superflipbook{{/str}}</a>{{/allowdownload}}
+        {{#allowprint}}<button type="button" class="btn btn-secondary" data-action="print">{{#str}}print, mod_superflipbook{{/str}}</button>{{/allowprint}}
+    </div>
+    <div class="sf-book-container">
+        <aside class="sf-thumbnails" data-region="thumbnails" hidden aria-label="{{#str}}thumbnails, mod_superflipbook{{/str}}"></aside>
+        <aside class="sf-bookmarks" data-region="bookmarks" hidden aria-label="{{#str}}bookmarks, mod_superflipbook{{/str}}"></aside>
+        <div class="sf-book" data-region="book"></div>
+    </div>
+    <div data-region="status" role="status" aria-live="polite">{{#str}}loading, mod_superflipbook{{/str}}</div>
+    <p class="sf-reading-progress">{{#str}}readingprogress, mod_superflipbook{{/str}}: <span data-region="progress">0%</span></p>
+    {{#showack}}
+        <section class="sf-acknowledge">
+            <h3>{{#str}}acknowledgement, mod_superflipbook{{/str}}</h3>
+            <p>{{ackstatement}}</p>
+            <label><input type="checkbox" data-region="consent" {{#acknowledged}}checked disabled{{/acknowledged}}>
+                {{#str}}ackconfirm, mod_superflipbook{{/str}}</label>
+            <button type="button" class="btn btn-primary" data-action="acknowledge" {{#acknowledged}}disabled{{/acknowledged}}>
+                {{#str}}acknowledge, mod_superflipbook{{/str}}</button>
+        </section>
+    {{/showack}}
+    <p class="sf-reader-hint">{{#str}}readinghonesty, mod_superflipbook{{/str}}</p>
+</div>
