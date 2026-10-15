@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f5f2eb">
+    <meta name="description"
+          content="Fólio transforma seu PDF em um livro digital com navegação e animação de páginas. Seu PDF permanece no dispositivo.">
+    <title>Fólio — Seu PDF, uma nova leitura</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+<div class="app-shell" id="app">
+
+    <main id="inicio">
+
+        <section class="reader-section" aria-label="Leitor de livros PDF">
+            <div class="reader-topline">
+                <div class="reader-publication"><span class="publication-icon" aria-hidden="true">▤</span>
+                    <div><strong id="document-title">A arte de desacelerar</strong><span id="document-details">EDIÇÃO DEMONSTRATIVA · 8 PÁGINAS</span>
+                    </div>
+                </div>
+                <div class="reader-toolbar" role="toolbar" aria-label="Ferramentas do leitor">
+                    <button type="button" class="tool-button" id="mode-button" data-action="mode"
+                            title="Alternar uma ou duas páginas" aria-label="Alternar uma ou duas páginas"
+                            aria-pressed="true">▥
+                    </button>
+                    <span class="toolbar-divider"></span>
+                    <button type="button" class="tool-button" data-action="zoom-out" title="Diminuir zoom"
+                            aria-label="Diminuir zoom">−
+                    </button>
+                    <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
+                    <button type="button" class="tool-button" data-action="zoom-in" title="Aumentar zoom"
+                            aria-label="Aumentar zoom">+
+                    </button>
+                    <span class="toolbar-divider"></span>
+                    <button type="button" class="tool-button" data-action="fullscreen" title="Tela cheia"
+                            aria-label="Tela cheia">⛶
+                    </button>
+                </div>
+            </div>
+            <div class="book-stage" id="book-stage">
+                <button type="button" class="turn-arrow turn-arrow-prev" data-action="prev"
+                        aria-label="Página anterior">‹
+                </button>
+                <div class="book-viewport" id="book-viewport">
+                    <div class="book-spread" id="book-spread" aria-live="polite" aria-atomic="true"></div>
+                </div>
+                <button type="button" class="turn-arrow turn-arrow-next" data-action="next" aria-label="Próxima página">
+                    ›
+                </button>
+                <div class="stage-footnote">ARRASTE UM PDF PARA CÁ PARA COMEÇAR A LER</div>
+                <div class="drop-zone" id="drop-zone" aria-hidden="true">
+                    <div><span class="drop-icon">↥</span><strong>Solte seu PDF aqui</strong><span>O arquivo será aberto apenas no seu navegador</span>
+                    </div>
+                </div>
+                <div class="reader-loading" id="reader-loading" hidden><span class="loader"></span><span
+                        id="loading-message">Preparando as páginas...</span></div>
+            </div>
+            <div class="reader-bottomline">
+                <div class="paging-actions">
+                    <button type="button" class="nav-button" data-action="first" aria-label="Primeira página"
+                            title="Primeira página">⇤
+                    </button>
+                    <span>Página</span><input id="page-number" type="number" min="1" max="8" value="1"
+                                              aria-label="Número da página" inputmode="numeric"><span>de <strong
+                        id="page-count">8</strong></span>
+                    <button type="button" class="nav-button" data-action="last" aria-label="Última página"
+                            title="Última página">⇥
+                    </button>
+                </div>
+                <div class="progress-control"><input type="range" id="page-progress" min="1" max="8" value="1"
+                                                     aria-label="Navegar pelas páginas"><span
+                        id="progress-label">13%</span></div>
+            </div>
+            <p class="reader-error" id="reader-error" role="alert" hidden></p>
+        </section>
+
+    </main>
+</div>
+<input id="pdf-input" type="file" accept=".pdf,application/pdf" hidden aria-label="Selecionar arquivo PDF">
+</body>
+</html>
