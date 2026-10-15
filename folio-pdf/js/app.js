@@ -80,6 +80,14 @@
         return pdfjsPromise;
     }
 
+    function formatDocumentTitle(filename) {
+        return String(filename || '')
+            .replace(/\.pdf$/i, '')
+            .replace(/[_+.~\u2010-\u2015-]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim() || 'Documento PDF';
+    }
+
     async function loadPDF(source) {
         if (!source || state.busy) return;
         const epoch = ++state.epoch;
@@ -146,7 +154,7 @@
             state.pending.clear();
             state.visiblePages = [];
             state.layout = null;
-            ui.title.textContent = title;
+            ui.title.textContent = formatDocumentTitle(title);
             ui.details.textContent = `ARQUIVO PDF · ${pdf.numPages} ${pdf.numPages === 1 ? 'PÁGINA' : 'PÁGINAS'}`;
             await renderBook(epoch);
             status(null);
