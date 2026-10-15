@@ -3,15 +3,58 @@
  * @copyright 2026 Eduardo Kraus
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
+define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notification, Str) {
     'use strict';
-    const init = (cfg) => {
-        const strings = cfg.strings;
-        const translated = (key, value) => strings[key].replace('{$a}', String(value));
+
+    // Use Moodle's cached language-string service instead of bloating js_call_amd arguments.
+    const STRING_KEYS = [
+        "canvaserror",
+        "doublepage",
+        "exitfullscreen",
+        "fullscreen",
+        "fullscreenenterunsupported",
+        "fullscreenerror",
+        "fullscreenexitunsupported",
+        "openingpdf",
+        "operationdenied",
+        "page",
+        "pagenumber",
+        "pagerendererror",
+        "pages",
+        "pdfcontent",
+        "pdfdetailslabel",
+        "pdfinvalid",
+        "pdfjsloaderror",
+        "pdfloaderror",
+        "pdfopenfailed",
+        "pdfpagealt",
+        "pdfpasswordprompt",
+        "pdfurlerror",
+        "preparingpages",
+        "singlepage",
+        "thumbcreateerror",
+        "thumbuploaderror",
+        "unknownerror"
+];
+
+    const init = async (cfg) => {
         const root = document.querySelector('[data-region="superflipbook"]');
         if (!root) {
             return;
         }
+        let translations;
+        try {
+            // get_strings works on Moodle 4.1+; getStrings only exists on newer releases.
+            // Keep the {$a} placeholder intact so dynamic messages can be formatted locally.
+            translations = await Str.get_strings(STRING_KEYS.map((key) => ({
+                key, component: 'mod_superflipbook', param: '{$a}'
+            })));
+        } catch (error) {
+            Notification.exception(error);
+            return;
+        }
+        const strings = Object.fromEntries(STRING_KEYS.map((key, index) => [key, translations[index]]));
+        const translated = (key, value) => strings[key].replace('{$a}', String(value));
         const overlay = root.querySelector('[data-region="overlay"]');
         const cards = [...root.querySelectorAll('[data-pdf-id]')];
         const firstFileId = cards[0]?.dataset.pdfId;
