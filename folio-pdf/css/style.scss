@@ -52,8 +52,9 @@ button:not(:disabled):active {
 
 .app-shell {
     max-width: 1480px;
-    padding: 0 clamp(22px, 6vw, 88px);
-    margin: 0 auto
+    padding: 10px;
+    margin: 0 auto;
+    height: 100vh;
 }
 
 .reader-section {
@@ -155,13 +156,14 @@ button:not(:disabled):active {
 .book-stage {
     position: relative;
     min-height: 610px;
+    height: calc(100vh - 177px);
     background: radial-gradient(ellipse at 48% 36%, #416351 0%, #2d4b3d 51%, #203b32 100%);
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 76px 80px 68px;
-    isolation: isolate
+    isolation: isolate;
 }
 
 .book-stage::before {
