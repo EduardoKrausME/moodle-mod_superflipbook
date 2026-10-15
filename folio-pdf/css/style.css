@@ -80,11 +80,6 @@ button:not(:disabled):active {
     min-width: 0
 }
 
-.publication-icon {
-    font-size: 33px;
-    color: #607e6b
-}
-
 .reader-publication strong, .reader-publication span:last-child {
     display: block
 }
@@ -120,6 +115,19 @@ button:not(:disabled):active {
     color: #40594a;
     border-radius: 5px;
     min-width: 33px
+}
+
+.tool-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center
+}
+
+.tool-button svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex: none
 }
 
 .tool-button:hover, .nav-button:hover {
@@ -165,26 +173,6 @@ button:not(:disabled):active {
     background-image: repeating-linear-gradient(45deg, transparent 0 3px, #fff 4px 4.2px);
     background-size: 9px 9px;
     mix-blend-mode: soft-light
-}
-
-.stage-footnote {
-    position: absolute;
-    left: 34px;
-    right: 34px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #c6d6c8;
-    font-size: 10px;
-    letter-spacing: 2px;
-    z-index: 2
-}
-
-.stage-footnote {
-    bottom: 26px;
-    justify-content: center;
-    font-size: 9px;
-    color: #91ae9e
 }
 
 .book-viewport {
@@ -267,106 +255,6 @@ button:not(:disabled):active {
     display: flex;
     flex-direction: column;
     background: #fbfaf5
-}
-
-.page-contents .page-small {
-    color: #7f887d;
-    font-size: clamp(6px, .72vw, 10px);
-    letter-spacing: 1.8px;
-    font-weight: 700
-}
-
-.demo-cover .page-contents {
-    background: #dce6d7;
-    padding: 9% 11%;
-    justify-content: space-between
-}
-
-.cover-heading {
-    font: normal clamp(19px, 3.3vw, 48px)/1.05 Georgia, serif;
-    letter-spacing: -.7px;
-    color: #204032;
-    max-width: 95%;
-    margin: 20px 0 10px
-}
-
-.cover-caption {
-    font: italic clamp(9px, 1vw, 15px)/1.6 Georgia, serif;
-    color: #607468;
-    max-width: 240px
-}
-
-.cover-art {
-    flex: 1;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    max-height: 100px
-}
-
-.cover-ring {
-    display: block;
-    width: min(13vw, 130px);
-    aspect-ratio: 1;
-    border: 19px solid rgba(84, 126, 93, .33);
-    border-radius: 50%;
-    box-shadow: 0 0 0 22px rgba(84, 126, 93, .10), 0 0 0 42px rgba(84, 126, 93, .06)
-}
-
-.cover-bottom {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    color: #50705f;
-    font-size: 10px;
-    letter-spacing: 1.1px
-}
-
-.demo-inside h2 {
-    font: normal clamp(19px, 2.45vw, 36px)/1.16 Georgia, serif;
-    letter-spacing: -.5px;
-    color: #304e40;
-    margin: 12px 0 14px
-}
-
-.demo-inside .overline {
-    color: #94a194;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1.7px
-}
-
-.demo-inside p {
-    font: normal clamp(10px, 1.08vw, 14px)/1.65 Georgia, serif;
-    color: #536158;
-    margin: 0 0 11px
-}
-
-.demo-inside blockquote {
-    border-left: 2px solid #9db29d;
-    margin: 8px 0 12px;
-    padding-left: 15px;
-    font: italic clamp(11px, 1.4vw, 18px)/1.4 Georgia, serif;
-    color: #456851
-}
-
-.page-footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 9px;
-    letter-spacing: 1px;
-    color: #879187;
-    border-top: 1px solid #e6e6dc;
-    padding-top: 12px
-}
-
-.demo-inside ul {
-    font: normal clamp(10px, 1vw, 13px)/1.8 Georgia, serif;
-    color: #526457;
-    padding-left: 19px;
-    margin: 6px 0
 }
 
 .pdf-page .page-contents {
@@ -586,54 +474,18 @@ button:not(:disabled):active {
     }
 }
 
-.drop-zone {
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    display: none;
-    place-items: center;
-    background: rgba(31, 66, 51, .9);
-    outline: 3px dashed #cbdacc;
-    outline-offset: -25px;
-    color: #f3f6ee
-}
-
-.drop-zone.visible {
-    display: grid
-}
-
-.drop-zone > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 13px
-}
-
-.drop-zone .drop-icon {
-    font-size: 66px
-}
-
-.drop-zone strong {
-    font: italic 30px Georgia, serif
-}
-
-.drop-zone span:last-child {
-    font-size: 13px;
-    opacity: .75
-}
-
-.reader-section:fullscreen {
+.reader-section:fullscreen, .reader-section:-webkit-full-screen {
     display: flex;
     flex-direction: column;
     background: #fff
 }
 
-.reader-section:fullscreen .book-stage {
+.reader-section:fullscreen .book-stage, .reader-section:-webkit-full-screen .book-stage {
     flex: 1;
     min-height: 0
 }
 
-.reader-section:fullscreen .book-viewport {
+.reader-section:fullscreen .book-viewport, .reader-section:-webkit-full-screen .book-viewport {
     max-height: min(77vh, 900px);
     width: min(78vw, 1500px)
 }
@@ -647,18 +499,6 @@ button:not(:disabled):active {
 
     .book-viewport {
         max-height: 365px
-    }
-
-    .demo-inside p {
-        font-size: 11px
-    }
-
-    .demo-inside h2 {
-        font-size: 22px
-    }
-
-    .cover-heading {
-        font-size: 30px
     }
 
     .reader-topline {
@@ -693,10 +533,6 @@ button:not(:disabled):active {
     .reader-publication span:last-child {
         font-size: 7px;
         letter-spacing: .5px
-    }
-
-    .publication-icon {
-        font-size: 24px
     }
 
     .reader-toolbar {
@@ -746,42 +582,6 @@ button:not(:disabled):active {
 
     .page-contents {
         padding: 26px 24px
-    }
-
-    .cover-heading {
-        font-size: 32px
-    }
-
-    .cover-caption {
-        font-size: 12px
-    }
-
-    .demo-inside h2 {
-        font-size: 28px
-    }
-
-    .demo-inside p {
-        font-size: 12px
-    }
-
-    .demo-inside ul {
-        font-size: 12px
-    }
-
-    .demo-inside blockquote {
-        font-size: 16px
-    }
-
-    .cover-ring {
-        width: 130px
-    }
-
-    .stage-footnote {
-        bottom: 21px;
-        left: 10px;
-        right: 10px;
-        font-size: 7px;
-        letter-spacing: 1px
     }
 
     .turn-arrow {
@@ -838,14 +638,6 @@ button:not(:disabled):active {
 
     .book-viewport {
         max-height: 310px
-    }
-
-    .demo-inside h2 {
-        font-size: 24px
-    }
-
-    .demo-inside p {
-        font-size: 11px
     }
 }
 
