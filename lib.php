@@ -169,14 +169,17 @@ function superflipbook_pluginfile($course, $cm, $context, $filearea, $args,
             !has_capability('mod/superflipbook:download', $context)) {
         return false;
     }
-    if (!$args) {
+    // The first URL segment after the file area is the Moodle Files API itemid,
+    // not a directory name. Both content and thumb files use itemid 0.
+    if (count($args) < 2) {
+        return false;
+    }
+    $itemid = array_shift($args);
+    if ((string)$itemid !== '0') {
         return false;
     }
     $filename = array_pop($args);
-    $filepath = '/' . implode('/', $args) . '/';
-    if ($filepath === '//') {
-        $filepath = '/';
-    }
+    $filepath = $args ? '/' . implode('/', $args) . '/' : '/';
     $storage = get_file_storage();
     $file = $storage->get_file($context->id, 'mod_superflipbook', $filearea, 0, $filepath, $filename);
     if (!$file || $file->is_directory()) {
