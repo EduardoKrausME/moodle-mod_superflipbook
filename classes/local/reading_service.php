@@ -25,6 +25,16 @@
 namespace mod_superflipbook\local;
 
 
+use completion_info;
+use context_module;
+use core\message\message;
+use core_user;
+use invalid_parameter_exception;
+use mod_superflipbook\event\acknowledgement_recorded;
+use moodle_url;
+use stdClass;
+use Throwable;
+
 /**
  * Reading service.
  */
@@ -32,8 +42,8 @@ class reading_service {
     /**
      * Record a page heartbeat or an explicit acknowledgement.
      *
-     * @param \stdClass $activity Activity.
-     * @param \stdClass $cm Course module.
+     * @param stdClass $activity Activity.
+     * @param stdClass $cm Course module.
      * @param int $userid User ID.
      * @param int $page Current page.
      * @param int $pages Document page count reported by viewer.
@@ -46,10 +56,10 @@ class reading_service {
             $entered = false) {
         global $DB;
         if ($page < 1 || $pages < 1 || $pages > 20000 || $page > $pages) {
-            throw new \invalid_parameter_exception('Invalid page range');
+            throw new invalid_parameter_exception('Invalid page range');
         }
         if ($seconds < 0 || $seconds > 30) {
-            throw new \invalid_parameter_exception('Invalid heartbeat');
+            throw new invalid_parameter_exception('Invalid heartbeat');
         }
         $now = time();
         $key = ['superflipbookid' => $activity->id, 'userid' => $userid,
@@ -65,7 +75,7 @@ class reading_service {
         }
         if ((int)$progress->totalpages !== (int)$pages) {
             // A changed document should have an incremented revision.
-            throw new \invalid_parameter_exception('Page count has changed during this revision');
+            throw new invalid_parameter_exception('Page count has changed during this revision');
         }
         $pagekey = $key + ['pagenum' => $page];
         $pageprogress = $DB->get_record('superflipbook_pages', $pagekey);
@@ -92,8 +102,8 @@ class reading_service {
                     'ipaddress' => !empty($activity->recordip) ? getremoteaddr() : null,
                 ]));
                 $justacknowledged = true;
-                \mod_superflipbook\event\acknowledgement_recorded::create([
-                    'context' => \context_module::instance($cm->id), 'objectid' => $activity->id,
+                acknowledgement_recorded::create([
+                    'context' => context_module::instance($cm->id), 'objectid' => $activity->id,
                     'relateduserid' => $userid,
                 ])->trigger();
             }
@@ -108,7 +118,7 @@ class reading_service {
         if ($justacknowledged) {
             try {
                 self::send_acknowledgement_receipt($activity, $cm, $userid);
-            } catch (\Throwable $ex) {
+            } catch (Throwable $ex) {
                 debugging($ex->getMessage(), DEBUG_DEVELOPER);
             }
         }
@@ -119,7 +129,7 @@ class reading_service {
                     'userid' => $userid, 'rawgrade' => $activity->grade, 'dategraded' => $now,
                 ]);
             }
-            $completion = new \completion_info(get_course($activity->course));
+            $completion = new completion_info(get_course($activity->course));
             if ($completion->is_enabled($cm)) {
                 $completion->update_state($cm, COMPLETION_UNKNOWN, $userid);
             }
@@ -130,15 +140,15 @@ class reading_service {
     /**
      * Send an optional confirmation using Moodle Messaging API.
      *
-     * @param \stdClass $activity Activity.
-     * @param \stdClass $cm Course module.
+     * @param stdClass $activity Activity.
+     * @param stdClass $cm Course module.
      * @param int $userid Learner.
      */
     private static function send_acknowledgement_receipt($activity, $cm, $userid) {
-        $msg = new \core\message\message();
+        $msg = new message();
         $msg->component = 'mod_superflipbook';
         $msg->name = 'acknowledged';
-        $msg->userfrom = \core_user::get_noreply_user();
+        $msg->userfrom = core_user::get_noreply_user();
         $msg->userto = $userid;
         $msg->subject = get_string('ackreceipt', 'mod_superflipbook', $activity->name);
         $msg->fullmessage = get_string('ackreceipttext', 'mod_superflipbook', $activity->name);
@@ -146,7 +156,7 @@ class reading_service {
         $msg->fullmessagehtml = '';
         $msg->smallmessage = $msg->fullmessage;
         $msg->notification = 1;
-        $msg->contexturl = (new \moodle_url('/mod/superflipbook/view.php', ['id' => $cm->id]))->out(false);
+        $msg->contexturl = (new moodle_url('/mod/superflipbook/view.php', ['id' => $cm->id]))->out(false);
         $msg->contexturlname = $activity->name;
         message_send($msg);
     }
@@ -154,7 +164,7 @@ class reading_service {
     /**
      * Get the learner's progress for this revision.
      *
-     * @param \stdClass $activity Activity.
+     * @param stdClass $activity Activity.
      * @param int $userid User ID.
      * @return array
      */
@@ -178,7 +188,7 @@ class reading_service {
     /**
      * Check configured rules; a view by itself is never sufficient when rules exist.
      *
-     * @param \stdClass $activity Activity.
+     * @param stdClass $activity Activity.
      * @param int $userid User ID.
      * @return bool
      */

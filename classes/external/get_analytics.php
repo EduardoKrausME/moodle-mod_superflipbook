@@ -24,19 +24,26 @@
 
 namespace mod_superflipbook\external;
 
+use context_module;
+use external_api;
+use external_function_parameters;
+use external_multiple_structure;
+use external_single_structure;
+use external_value;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
 /**
  * Aggregate reader analytics (no learner identifiers).
  */
-class get_analytics extends \external_api {
+class get_analytics extends external_api {
     /**
      * Parameters.
      */
     public static function execute_parameters() {
-        return new \external_function_parameters([
-            'cmid' => new \external_value(PARAM_INT, 'Course module ID'),
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'Course module ID'),
         ]);
     }
     /**
@@ -47,7 +54,7 @@ class get_analytics extends \external_api {
         $args = self::validate_parameters(self::execute_parameters(), compact('cmid'));
         $cm = get_coursemodule_from_id('superflipbook', $args['cmid'], 0, false, MUST_EXIST);
         require_course_login(get_course($cm->course), true, $cm);
-        $context = \context_module::instance($cm->id);
+        $context = context_module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/superflipbook:viewreports', $context);
         $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
@@ -69,14 +76,14 @@ class get_analytics extends \external_api {
      * Return structure.
      */
     public static function execute_returns() {
-        return new \external_single_structure([
-            'readers' => new \external_value(PARAM_INT, 'Learners'),
-            'completed' => new \external_value(PARAM_INT, 'Completed learners'),
-            'pages' => new \external_multiple_structure(new \external_single_structure([
-                'page' => new \external_value(PARAM_INT, 'Page number'),
-                'readers' => new \external_value(PARAM_INT, 'Readers on this page'),
-                'views' => new \external_value(PARAM_INT, 'Visits'),
-                'seconds' => new \external_value(PARAM_INT, 'Estimated reading time'),
+        return new external_single_structure([
+            'readers' => new external_value(PARAM_INT, 'Learners'),
+            'completed' => new external_value(PARAM_INT, 'Completed learners'),
+            'pages' => new external_multiple_structure(new external_single_structure([
+                'page' => new external_value(PARAM_INT, 'Page number'),
+                'readers' => new external_value(PARAM_INT, 'Readers on this page'),
+                'views' => new external_value(PARAM_INT, 'Visits'),
+                'seconds' => new external_value(PARAM_INT, 'Estimated reading time'),
             ])),
         ]);
     }

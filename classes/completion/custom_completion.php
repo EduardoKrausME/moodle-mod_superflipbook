@@ -25,6 +25,7 @@
 namespace mod_superflipbook\completion;
 
 use core_completion\activity_custom_completion;
+use mod_superflipbook\local\reading_service;
 
 /**
  * Custom completion for all reading conditions.
@@ -44,7 +45,7 @@ class custom_completion extends activity_custom_completion {
         global $DB;
         $this->validate_rule($rule);
         $activity = $DB->get_record('superflipbook', ['id' => $this->cm->instance], '*', MUST_EXIST);
-        return \mod_superflipbook\local\reading_service::is_completed($activity, $this->userid)
+        return reading_service::is_completed($activity, $this->userid)
             ? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE;
     }
 

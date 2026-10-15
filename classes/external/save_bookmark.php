@@ -24,21 +24,29 @@
 
 namespace mod_superflipbook\external;
 
+use context_module;
+use core_text;
+use external_api;
+use external_function_parameters;
+use external_single_structure;
+use external_value;
+use invalid_parameter_exception;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
 /**
  * Private learner bookmark API.
  */
-class save_bookmark extends \external_api {
+class save_bookmark extends external_api {
     /**
      * Parameters.
      */
     public static function execute_parameters() {
-        return new \external_function_parameters([
-            'cmid' => new \external_value(PARAM_INT, 'Course module'),
-            'page' => new \external_value(PARAM_INT, 'Page number'),
-            'note' => new \external_value(PARAM_TEXT, 'Private note, up to 2000 characters'),
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'Course module'),
+            'page' => new external_value(PARAM_INT, 'Page number'),
+            'note' => new external_value(PARAM_TEXT, 'Private note, up to 2000 characters'),
         ]);
     }
     /**
@@ -51,12 +59,12 @@ class save_bookmark extends \external_api {
         $cm = get_coursemodule_from_id('superflipbook', $values['cmid'], 0, false, MUST_EXIST);
         $course = get_course($cm->course);
         require_course_login($course, true, $cm);
-        $context = \context_module::instance($cm->id);
+        $context = context_module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/superflipbook:view', $context);
         $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
-        if ($page < 1 || $page > 20000 || \core_text::strlen($note) > 2000) {
-            throw new \invalid_parameter_exception('Invalid bookmark');
+        if ($page < 1 || $page > 20000 || core_text::strlen($note) > 2000) {
+            throw new invalid_parameter_exception('Invalid bookmark');
         }
         $key = ['superflipbookid' => $activity->id, 'userid' => $USER->id, 'pagenum' => $page];
         $existing = $DB->get_record('superflipbook_bookmarks', $key);
@@ -73,8 +81,8 @@ class save_bookmark extends \external_api {
      * Returns.
      */
     public static function execute_returns() {
-        return new \external_single_structure([
-            'saved' => new \external_value(PARAM_BOOL, 'Success'),
+        return new external_single_structure([
+            'saved' => new external_value(PARAM_BOOL, 'Success'),
         ]);
     }
 }

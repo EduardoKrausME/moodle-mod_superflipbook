@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_superflipbook\local\reading_service;
+
 
 /**
  * Features supported by the activity.
@@ -218,7 +220,7 @@ function superflipbook_get_completion_state($course, $cm, $userid, $type) {
         return false;
     }
     if (!empty($activity->completionreading)) {
-        return \mod_superflipbook\local\reading_service::is_completed($activity, $userid);
+        return reading_service::is_completed($activity, $userid);
     }
     return $type;
 }
@@ -297,7 +299,7 @@ function superflipbook_reset_userdata($data) {
     }
     $ids = $DB->get_fieldset_select('superflipbook', 'id', 'course = :course', ['course' => $data->courseid]);
     if ($ids) {
-        list($sql, $params) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
+        [$sql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
         foreach (['superflipbook_pages', 'superflipbook_progress', 'superflipbook_ack',
                      'superflipbook_bookmarks'] as $table) {
             $DB->delete_records_select($table, "superflipbookid $sql", $params);

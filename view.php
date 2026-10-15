@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_superflipbook\event\course_module_viewed;
+use mod_superflipbook\local\reading_service;
+
 require_once('../../config.php');
 require_once($CFG->libdir . '/completionlib.php');
 
@@ -54,10 +57,10 @@ $completion = new completion_info($course);
 if ($completion->is_enabled($cm)) {
     $completion->set_module_viewed($cm);
 }
-\mod_superflipbook\event\course_module_viewed::create([
+course_module_viewed::create([
     'objectid' => $activity->id, 'context' => $context,
 ])->trigger();
-$status = \mod_superflipbook\local\reading_service::status($activity, $USER->id);
+$status = reading_service::status($activity, $USER->id);
 $reportlink = has_capability('mod/superflipbook:viewreports', $context);
 $data = [
     'title' => format_string($activity->name), 'intro' => format_module_intro('superflipbook',

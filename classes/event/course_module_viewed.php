@@ -23,6 +23,8 @@
  */
 
 namespace mod_superflipbook\event;
+use moodle_url;
+
 /**
  * Course module viewed event.
  */
@@ -39,6 +41,6 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * Url.
      */
     public function get_url() {
-        return new \moodle_url('/mod/superflipbook/view.php', ['id' => $this->contextinstanceid]);
+        return new moodle_url('/mod/superflipbook/view.php', ['id' => $this->contextinstanceid]);
     }
 }

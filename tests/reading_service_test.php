@@ -25,12 +25,16 @@
 namespace mod_superflipbook;
 
 
+use advanced_testcase;
+use invalid_parameter_exception;
+use mod_superflipbook\local\reading_service;
+
 /**
  * Reading rules must be satisfied together and revision-isolated.
  *
  * @covers \mod_superflipbook\local\reading_service
  */
-final class reading_service_test extends \advanced_testcase {
+final class reading_service_test extends advanced_testcase {
     /**
      * Build an activity database fixture.
      */
@@ -55,8 +59,8 @@ final class reading_service_test extends \advanced_testcase {
      * Missing progress cannot satisfy completion.
      */
     public function test_requires_actual_progress(): void {
-        list($activity, $user) = $this->fixture();
-        $this->assertFalse(\mod_superflipbook\local\reading_service::is_completed($activity, $user->id));
+        [$activity, $user] = $this->fixture();
+        $this->assertFalse(reading_service::is_completed($activity, $user->id));
     }
 
     /**
@@ -64,7 +68,7 @@ final class reading_service_test extends \advanced_testcase {
      */
     public function test_all_requirements_combined(): void {
         global $DB;
-        list($activity, $user) = $this->fixture();
+        [$activity, $user] = $this->fixture();
         $base = ['superflipbookid' => $activity->id, 'userid' => $user->id, 'revision' => 1];
         $DB->insert_record('superflipbook_progress', (object)($base + [
             'totalseconds' => 60, 'maxpage' => 2, 'totalpages' => 2,
@@ -76,22 +80,22 @@ final class reading_service_test extends \advanced_testcase {
                 'firstview' => time(), 'lastview' => time(),
             ]));
         }
-        $this->assertFalse(\mod_superflipbook\local\reading_service::is_completed($activity, $user->id));
+        $this->assertFalse(reading_service::is_completed($activity, $user->id));
         $DB->insert_record('superflipbook_ack', (object)($base + [
             'statement' => $activity->ackstatement, 'timecreated' => time(),
         ]));
-        $this->assertTrue(\mod_superflipbook\local\reading_service::is_completed($activity, $user->id));
+        $this->assertTrue(reading_service::is_completed($activity, $user->id));
         $activity->revision = 2;
-        $this->assertFalse(\mod_superflipbook\local\reading_service::is_completed($activity, $user->id));
+        $this->assertFalse(reading_service::is_completed($activity, $user->id));
     }
 
     /**
      * No bypass with fake or excessively long page heartbeats.
      */
     public function test_rejects_invalid_page_range(): void {
-        list($activity, $user) = $this->fixture();
-        $this->expectException(\invalid_parameter_exception::class);
-        \mod_superflipbook\local\reading_service::record($activity, (object)['id' => 1],
+        [$activity, $user] = $this->fixture();
+        $this->expectException(invalid_parameter_exception::class);
+        reading_service::record($activity, (object)['id' => 1],
             $user->id, 3, 2, 0, false);
     }
 }

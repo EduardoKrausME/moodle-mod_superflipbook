@@ -25,10 +25,12 @@
 namespace mod_superflipbook\privacy;
 
 
+use context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
+use core_privacy\local\request\core_userlist_provider;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
@@ -38,7 +40,7 @@ use core_privacy\local\request\writer;
 class provider implements
         \core_privacy\local\metadata\provider,
         \core_privacy\local\request\plugin\provider,
-        \core_privacy\local\request\core_userlist_provider {
+        core_userlist_provider {
     /**
      * Declare personal data.
      */
@@ -137,7 +139,7 @@ class provider implements
     /**
      * Delete all learner data in a module context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context): void {
+    public static function delete_data_for_all_users_in_context(context $context): void {
         global $DB;
         if ($context->contextlevel !== CONTEXT_MODULE) {
             return;
@@ -192,7 +194,7 @@ class provider implements
         if (!$userids) {
             return;
         }
-        list($in, $params) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
+        [$in, $params] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
         $params['instance'] = $instanceid;
         foreach (['superflipbook_progress', 'superflipbook_pages', 'superflipbook_ack',
                      'superflipbook_bookmarks'] as $table) {

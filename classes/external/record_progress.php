@@ -24,24 +24,30 @@
 
 namespace mod_superflipbook\external;
 
+use context_module;
+use external_api;
+use external_function_parameters;
+use external_value;
+use mod_superflipbook\local\reading_service;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
 /**
  * Secure progress endpoint.
  */
-class record_progress extends \external_api {
+class record_progress extends external_api {
     /**
      * Parameters.
      */
     public static function execute_parameters() {
-        return new \external_function_parameters([
-            'cmid' => new \external_value(PARAM_INT, 'Course module ID'),
-            'page' => new \external_value(PARAM_INT, 'Current page'),
-            'pages' => new \external_value(PARAM_INT, 'Total pages'),
-            'seconds' => new \external_value(PARAM_INT, 'Active seconds'),
-            'acknowledge' => new \external_value(PARAM_BOOL, 'Explicit acknowledgement'),
-            'entered' => new \external_value(PARAM_BOOL, 'Navigated into this page', VALUE_DEFAULT, false),
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'Course module ID'),
+            'page' => new external_value(PARAM_INT, 'Current page'),
+            'pages' => new external_value(PARAM_INT, 'Total pages'),
+            'seconds' => new external_value(PARAM_INT, 'Active seconds'),
+            'acknowledge' => new external_value(PARAM_BOOL, 'Explicit acknowledgement'),
+            'entered' => new external_value(PARAM_BOOL, 'Navigated into this page', VALUE_DEFAULT, false),
         ]);
     }
 
@@ -55,11 +61,11 @@ class record_progress extends \external_api {
         $cm = get_coursemodule_from_id('superflipbook', $values['cmid'], 0, false, MUST_EXIST);
         $course = get_course($cm->course);
         require_course_login($course, true, $cm);
-        $context = \context_module::instance($cm->id);
+        $context = context_module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/superflipbook:view', $context);
         $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
-        return \mod_superflipbook\local\reading_service::record($activity, $cm, $USER->id,
+        return reading_service::record($activity, $cm, $USER->id,
             $values['page'], $values['pages'], $values['seconds'], $values['acknowledge'], $values['entered']);
     }
 

@@ -24,19 +24,26 @@
 
 namespace mod_superflipbook\external;
 
+use context_module;
+use external_api;
+use external_function_parameters;
+use external_single_structure;
+use external_value;
+use mod_superflipbook\local\reading_service;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 
 /**
  * Secure progress query.
  */
-class get_progress extends \external_api {
+class get_progress extends external_api {
     /**
      * Parameters.
      */
     public static function execute_parameters() {
-        return new \external_function_parameters([
-            'cmid' => new \external_value(PARAM_INT, 'Course module ID'),
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'Course module ID'),
         ]);
     }
 
@@ -49,25 +56,25 @@ class get_progress extends \external_api {
         $cm = get_coursemodule_from_id('superflipbook', $values['cmid'], 0, false, MUST_EXIST);
         $course = get_course($cm->course);
         require_course_login($course, true, $cm);
-        $context = \context_module::instance($cm->id);
+        $context = context_module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/superflipbook:view', $context);
         $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
-        return \mod_superflipbook\local\reading_service::status($activity, $USER->id);
+        return reading_service::status($activity, $USER->id);
     }
 
     /**
      * Return shape.
      */
     public static function execute_returns() {
-        return new \external_single_structure([
-            'maxpage' => new \external_value(PARAM_INT, 'Furthest page'),
-            'totalpages' => new \external_value(PARAM_INT, 'Total pages'),
-            'totalseconds' => new \external_value(PARAM_INT, 'Estimated active seconds'),
-            'readpages' => new \external_value(PARAM_INT, 'Unique pages visited'),
-            'visited' => new \external_value(PARAM_TEXT, 'Comma-separated page numbers'),
-            'acknowledged' => new \external_value(PARAM_BOOL, 'Acknowledged'),
-            'completed' => new \external_value(PARAM_BOOL, 'Rule-based completion'),
+        return new external_single_structure([
+            'maxpage' => new external_value(PARAM_INT, 'Furthest page'),
+            'totalpages' => new external_value(PARAM_INT, 'Total pages'),
+            'totalseconds' => new external_value(PARAM_INT, 'Estimated active seconds'),
+            'readpages' => new external_value(PARAM_INT, 'Unique pages visited'),
+            'visited' => new external_value(PARAM_TEXT, 'Comma-separated page numbers'),
+            'acknowledged' => new external_value(PARAM_BOOL, 'Acknowledged'),
+            'completed' => new external_value(PARAM_BOOL, 'Rule-based completion'),
         ]);
     }
 }

@@ -23,10 +23,13 @@
  */
 
 namespace mod_superflipbook\event;
+use core\event\base;
+use moodle_url;
+
 /**
  * Event for a signed acknowledgement.
  */
-class acknowledgement_recorded extends \core\event\base {
+class acknowledgement_recorded extends base {
     /**
      * Initialize.
      */
@@ -51,6 +54,6 @@ class acknowledgement_recorded extends \core\event\base {
      * URL.
      */
     public function get_url() {
-        return new \moodle_url('/mod/superflipbook/view.php', ['id' => $this->contextinstanceid]);
+        return new moodle_url('/mod/superflipbook/view.php', ['id' => $this->contextinstanceid]);
     }
 }
