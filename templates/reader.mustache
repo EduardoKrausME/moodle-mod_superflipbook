@@ -13,7 +13,9 @@
                     data-pdf-url="{{url}}" data-pdf-name="{{name}}">
                 <span class="sf-gallery-cover">
                     {{#hasthumb}}<img src="{{thumburl}}" alt="" loading="lazy">{{/hasthumb}}
-                    {{^hasthumb}}<span class="sf-gallery-placeholder" aria-hidden="true">{{#str}}pdfplaceholder, mod_superflipbook{{/str}}</span>{{/hasthumb}}
+                    {{^hasthumb}}
+                        <span class="sf-gallery-placeholder" aria-hidden="true">{{#str}}pdfplaceholder, mod_superflipbook{{/str}}</span>
+                    {{/hasthumb}}
                 </span>
                 <span class="sf-gallery-name">{{name}}</span>
             </button>
@@ -31,9 +33,11 @@
                                 <span id="document-details">{{#str}}waitingpdf, mod_superflipbook{{/str}}</span>
                             </div>
                         </div>
-                        <div class="reader-toolbar" role="toolbar" aria-label="{{#str}}toolbar, mod_superflipbook{{/str}}">
+                        <div class="reader-toolbar" role="toolbar"
+                             aria-label="{{#str}}toolbar, mod_superflipbook{{/str}}">
                             <button type="button" class="tool-button" id="mode-button" data-action="mode"
-                                    title="{{#str}}singlepage, mod_superflipbook{{/str}}" aria-label="{{#str}}singlepage, mod_superflipbook{{/str}}" aria-pressed="true">
+                                    title="{{#str}}singlepage, mod_superflipbook{{/str}}"
+                                    aria-label="{{#str}}singlepage, mod_superflipbook{{/str}}" aria-pressed="true">
                                 <svg class="view-mode-spread" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                                      aria-hidden="true"
@@ -49,16 +53,19 @@
                                 </svg>
                             </button>
                             <span class="toolbar-divider"></span>
-                            <button type="button" class="tool-button" data-action="zoom-out" title="{{#str}}zoomout, mod_superflipbook{{/str}}"
+                            <button type="button" class="tool-button" data-action="zoom-out"
+                                    title="{{#str}}zoomout, mod_superflipbook{{/str}}"
                                     aria-label="{{#str}}zoomout, mod_superflipbook{{/str}}"> −
                             </button>
                             <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
-                            <button type="button" class="tool-button" data-action="zoom-in" title="{{#str}}zoomin, mod_superflipbook{{/str}}"
+                            <button type="button" class="tool-button" data-action="zoom-in"
+                                    title="{{#str}}zoomin, mod_superflipbook{{/str}}"
                                     aria-label="{{#str}}zoomin, mod_superflipbook{{/str}}"> +
                             </button>
                             <span class="toolbar-divider"></span>
                             <button type="button" class="tool-button" id="fullscreen-button" data-action="fullscreen"
-                                    title="{{#str}}fullscreen, mod_superflipbook{{/str}}" aria-label="{{#str}}fullscreen, mod_superflipbook{{/str}}" aria-pressed="false">
+                                    title="{{#str}}fullscreen, mod_superflipbook{{/str}}"
+                                    aria-label="{{#str}}fullscreen, mod_superflipbook{{/str}}" aria-pressed="false">
                                 <svg class="fullscreen-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                                      aria-hidden="true"
@@ -93,14 +100,16 @@
                     </div>
                     <div class="reader-bottomline">
                         <div class="paging-actions">
-                            <button type="button" class="nav-button" data-action="first" aria-label="{{#str}}firstpage, mod_superflipbook{{/str}}"
+                            <button type="button" class="nav-button" data-action="first"
+                                    aria-label="{{#str}}firstpage, mod_superflipbook{{/str}}"
                                     title="{{#str}}firstpage, mod_superflipbook{{/str}}">⇤
                             </button>
                             <span>{{#str}}page, mod_superflipbook{{/str}}</span>
                             <input id="page-number" type="number" min="1" max="1" value="1"
                                    aria-label="{{#str}}pageinputlabel, mod_superflipbook{{/str}}" inputmode="numeric">
                             <span>{{#str}}pageof, mod_superflipbook{{/str}} <strong id="page-count">0</strong></span>
-                            <button type="button" class="nav-button" data-action="last" aria-label="{{#str}}lastpage, mod_superflipbook{{/str}}"
+                            <button type="button" class="nav-button" data-action="last"
+                                    aria-label="{{#str}}lastpage, mod_superflipbook{{/str}}"
                                     title="{{#str}}lastpage, mod_superflipbook{{/str}}">⇥
                             </button>
                         </div>

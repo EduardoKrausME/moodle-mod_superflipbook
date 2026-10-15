@@ -46,6 +46,7 @@ class get_bookmarks extends external_api {
             'cmid' => new external_value(PARAM_INT, 'Course module ID'),
         ]);
     }
+
     /**
      * Query bookmarks of current logged in reader only.
      */
@@ -60,10 +61,11 @@ class get_bookmarks extends external_api {
         $rows = $DB->get_records('superflipbook_bookmarks', [
             'superflipbookid' => $cm->instance, 'userid' => $USER->id,
         ], 'pagenum ASC', 'pagenum, note, timemodified');
-        return array_values(array_map(static function($record) {
+        return array_values(array_map(static function ($record) {
             return ['page' => (int)$record->pagenum, 'note' => $record->note ?? ''];
         }, $rows));
     }
+
     /**
      * Return structure.
      */

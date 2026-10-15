@@ -23,6 +23,7 @@
  */
 
 namespace mod_superflipbook\event;
+
 use core\event\base;
 use moodle_url;
 
@@ -38,18 +39,21 @@ class acknowledgement_recorded extends base {
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'superflipbook';
     }
+
     /**
      * Event name.
      */
     public static function get_name() {
         return get_string('eventacknowledged', 'mod_superflipbook');
     }
+
     /**
      * Description.
      */
     public function get_description() {
         return "User {$this->userid} acknowledged flipbook {$this->objectid}.";
     }
+
     /**
      * URL.
      */

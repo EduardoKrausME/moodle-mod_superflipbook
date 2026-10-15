@@ -98,7 +98,7 @@ if ($export) {
     $writer->set_filename('superflipbook-' . $activity->id . '-report');
     $writer->add_data(['User ID', 'First name', 'Last name', 'Email', 'Max page', 'Pages',
         'Active seconds', 'Completed', 'Last visit']);
-    $safe = static function($value) {
+    $safe = static function ($value) {
         $value = (string)$value;
         return preg_match('/^[\x00-\x20]*[=+\-@]/', $value) ? chr(39) . $value : $value;
     };

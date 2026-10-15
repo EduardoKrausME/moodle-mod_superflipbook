@@ -38,9 +38,9 @@ use core_privacy\local\request\writer;
  * Privacy provider for all persistent learner data.
  */
 class provider implements
-        \core_privacy\local\metadata\provider,
-        \core_privacy\local\request\plugin\provider,
-        core_userlist_provider {
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\plugin\provider,
+    core_userlist_provider {
     /**
      * Declare personal data.
      */

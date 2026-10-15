@@ -35,22 +35,22 @@ require_capability('mod/superflipbook:view', $context);
 $storage = get_file_storage();
 $pdf = $storage->get_file_by_id($fileid);
 if (!$pdf || $pdf->get_contextid() != $context->id ||
-        $pdf->get_component() !== 'mod_superflipbook' ||
-        $pdf->get_filearea() !== 'content' || $pdf->get_itemid() != 0 ||
-        $pdf->get_mimetype() !== 'application/pdf') {
+    $pdf->get_component() !== 'mod_superflipbook' ||
+    $pdf->get_filearea() !== 'content' || $pdf->get_itemid() != 0 ||
+    $pdf->get_mimetype() !== 'application/pdf') {
     throw new invalid_parameter_exception('Invalid source PDF');
 }
 $filename = $fileid . '.jpg';
 $thumb = $storage->get_file($context->id, 'mod_superflipbook', 'thumb', 0, '/', $filename);
 if (!$thumb) {
     if (empty($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK ||
-            $_FILES['image']['size'] > 350000 || $_FILES['image']['size'] < 1) {
+        $_FILES['image']['size'] > 350000 || $_FILES['image']['size'] < 1) {
         throw new invalid_parameter_exception('Invalid thumbnail file');
     }
     $image = file_get_contents($_FILES['image']['tmp_name']);
     $info = $image !== false ? getimagesizefromstring($image) : false;
     if (!$info || $info[2] !== IMAGETYPE_JPEG || $info[0] < 1 || $info[1] < 1 ||
-            $info[0] > 500 || $info[1] > 700) {
+        $info[0] > 500 || $info[1] > 700) {
         throw new invalid_parameter_exception('Thumbnail must be a small JPEG');
     }
     $thumb = $storage->create_file_from_string([

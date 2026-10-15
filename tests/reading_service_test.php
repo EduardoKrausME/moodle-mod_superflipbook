@@ -71,19 +71,19 @@ final class reading_service_test extends advanced_testcase {
         [$activity, $user] = $this->fixture();
         $base = ['superflipbookid' => $activity->id, 'userid' => $user->id, 'revision' => 1];
         $DB->insert_record('superflipbook_progress', (object)($base + [
-            'totalseconds' => 60, 'maxpage' => 2, 'totalpages' => 2,
-            'completed' => 0, 'firstview' => time(), 'lastview' => time(),
-        ]));
+                'totalseconds' => 60, 'maxpage' => 2, 'totalpages' => 2,
+                'completed' => 0, 'firstview' => time(), 'lastview' => time(),
+            ]));
         foreach ([1, 2] as $page) {
             $DB->insert_record('superflipbook_pages', (object)($base + [
-                'pagenum' => $page, 'views' => 1, 'totalseconds' => 30,
-                'firstview' => time(), 'lastview' => time(),
-            ]));
+                    'pagenum' => $page, 'views' => 1, 'totalseconds' => 30,
+                    'firstview' => time(), 'lastview' => time(),
+                ]));
         }
         $this->assertFalse(reading_service::is_completed($activity, $user->id));
         $DB->insert_record('superflipbook_ack', (object)($base + [
-            'statement' => $activity->ackstatement, 'timecreated' => time(),
-        ]));
+                'statement' => $activity->ackstatement, 'timecreated' => time(),
+            ]));
         $this->assertTrue(reading_service::is_completed($activity, $user->id));
         $activity->revision = 2;
         $this->assertFalse(reading_service::is_completed($activity, $user->id));

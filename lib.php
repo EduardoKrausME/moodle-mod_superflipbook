@@ -154,7 +154,7 @@ function superflipbook_get_file_areas($course, $cm, $context) {
  * @return bool
  */
 function superflipbook_pluginfile($course, $cm, $context, $filearea, $args,
-        $forcedownload, array $options = []) {
+                                  $forcedownload, array $options = []) {
     global $DB;
     if ($context->contextlevel !== CONTEXT_MODULE || !in_array($filearea, ['content', 'thumb'], true) || !$cm) {
         return false;
@@ -166,7 +166,7 @@ function superflipbook_pluginfile($course, $cm, $context, $filearea, $args,
         return false;
     }
     if ($filearea === 'content' && $forcedownload &&
-            !has_capability('mod/superflipbook:download', $context)) {
+        !has_capability('mod/superflipbook:download', $context)) {
         return false;
     }
     // The first URL segment after the file area is the Moodle Files API itemid,
@@ -190,14 +190,14 @@ function superflipbook_pluginfile($course, $cm, $context, $filearea, $args,
     }
     if ($filearea === 'thumb') {
         if (!preg_match('/^([1-9][0-9]*)\.jpg$/', $filename, $matches) ||
-                $file->get_mimetype() !== 'image/jpeg') {
+            $file->get_mimetype() !== 'image/jpeg') {
             return false;
         }
         $source = $storage->get_file_by_id((int)$matches[1]);
         if (!$source || $source->get_contextid() != $context->id ||
-                $source->get_component() !== 'mod_superflipbook' ||
-                $source->get_filearea() !== 'content' ||
-                $source->get_mimetype() !== 'application/pdf') {
+            $source->get_component() !== 'mod_superflipbook' ||
+            $source->get_filearea() !== 'content' ||
+            $source->get_mimetype() !== 'application/pdf') {
             return false;
         }
     }

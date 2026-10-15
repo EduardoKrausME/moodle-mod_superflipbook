@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/superflipbook/backup/moodle2/restore_superflipbook_stepslib.php');
+
 /**
  * Restore task for Super Flipbook.
  */
@@ -33,6 +34,7 @@ class restore_superflipbook_activity_task extends restore_activity_task {
      */
     protected function define_my_settings() {
     }
+
     /**
      * Steps.
      */
@@ -40,18 +42,21 @@ class restore_superflipbook_activity_task extends restore_activity_task {
         $this->add_step(new restore_superflipbook_activity_structure_step('superflipbook_structure',
             'superflipbook.xml'));
     }
+
     /**
      * Rule definitions.
      */
     public static function define_decode_contents() {
         return [];
     }
+
     /**
      * Content decoding rules.
      */
     public static function define_decode_rules() {
         return [];
     }
+
     /**
      * Restored links.
      */

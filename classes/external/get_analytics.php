@@ -46,6 +46,7 @@ class get_analytics extends external_api {
             'cmid' => new external_value(PARAM_INT, 'Course module ID'),
         ]);
     }
+
     /**
      * Get page counts with full capability checks.
      */
@@ -72,6 +73,7 @@ class get_analytics extends external_api {
         return ['readers' => (int)$totals->learners, 'completed' => (int)$totals->completed,
             'pages' => $pages];
     }
+
     /**
      * Return structure.
      */

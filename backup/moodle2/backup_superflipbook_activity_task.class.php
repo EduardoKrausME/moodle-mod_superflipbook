@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/superflipbook/backup/moodle2/backup_superflipbook_stepslib.php');
+
 /**
  * Activity backup task.
  */
@@ -33,12 +34,14 @@ class backup_superflipbook_activity_task extends backup_activity_task {
      */
     protected function define_my_settings() {
     }
+
     /**
      * Steps.
      */
     protected function define_my_steps() {
         $this->add_step(new backup_superflipbook_activity_structure_step('superflipbook_structure', 'superflipbook.xml'));
     }
+
     /**
      * Moodle log file mapping.
      */

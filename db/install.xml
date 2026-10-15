@@ -26,8 +26,12 @@
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
             </FIELDS>
-            <KEYS><KEY NAME="primary" TYPE="primary" FIELDS="id"/></KEYS>
-            <INDEXES><INDEX NAME="course" UNIQUE="false" FIELDS="course"/></INDEXES>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+            </INDEXES>
         </TABLE>
         <TABLE NAME="superflipbook_progress" COMMENT="One learner record per revision">
             <FIELDS>
@@ -44,9 +48,12 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook" REFFIELDS="id"/>
+                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook"
+                     REFFIELDS="id"/>
             </KEYS>
-            <INDEXES><INDEX NAME="learner_revision" UNIQUE="true" FIELDS="superflipbookid, userid, revision"/></INDEXES>
+            <INDEXES>
+                <INDEX NAME="learner_revision" UNIQUE="true" FIELDS="superflipbookid, userid, revision"/>
+            </INDEXES>
         </TABLE>
         <TABLE NAME="superflipbook_pages" COMMENT="Unique pages visited, time and frequency">
             <FIELDS>
@@ -62,9 +69,12 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook" REFFIELDS="id"/>
+                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook"
+                     REFFIELDS="id"/>
             </KEYS>
-            <INDEXES><INDEX NAME="page_learner_revision" UNIQUE="true" FIELDS="superflipbookid, userid, revision, pagenum"/></INDEXES>
+            <INDEXES>
+                <INDEX NAME="page_learner_revision" UNIQUE="true" FIELDS="superflipbookid, userid, revision, pagenum"/>
+            </INDEXES>
         </TABLE>
         <TABLE NAME="superflipbook_ack" COMMENT="Immutable acknowledgements and their statements">
             <FIELDS>
@@ -78,9 +88,12 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook" REFFIELDS="id"/>
+                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook"
+                     REFFIELDS="id"/>
             </KEYS>
-            <INDEXES><INDEX NAME="ack_unique" UNIQUE="true" FIELDS="superflipbookid, userid, revision"/></INDEXES>
+            <INDEXES>
+                <INDEX NAME="ack_unique" UNIQUE="true" FIELDS="superflipbookid, userid, revision"/>
+            </INDEXES>
         </TABLE>
         <TABLE NAME="superflipbook_bookmarks" COMMENT="Per-learner bookmarks and private notes">
             <FIELDS>
@@ -93,9 +106,12 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook" REFFIELDS="id"/>
+                <KEY NAME="superflipbook" TYPE="foreign" FIELDS="superflipbookid" REFTABLE="superflipbook"
+                     REFFIELDS="id"/>
             </KEYS>
-            <INDEXES><INDEX NAME="bookmark_unique" UNIQUE="true" FIELDS="superflipbookid, userid, pagenum"/></INDEXES>
+            <INDEXES>
+                <INDEX NAME="bookmark_unique" UNIQUE="true" FIELDS="superflipbookid, userid, pagenum"/>
+            </INDEXES>
         </TABLE>
     </TABLES>
 </XMLDB>

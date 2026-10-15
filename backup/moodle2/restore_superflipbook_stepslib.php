@@ -41,6 +41,7 @@ class restore_superflipbook_activity_structure_step extends restore_activity_str
         }
         return $this->prepare_activity_structure($paths);
     }
+
     /**
      * Activity.
      */
@@ -54,30 +55,35 @@ class restore_superflipbook_activity_structure_step extends restore_activity_str
         $this->apply_activity_instance($newid);
         $this->set_mapping('superflipbook', $oldid, $newid);
     }
+
     /**
      * Learner progress.
      */
     protected function process_superflipbook_progress($data) {
         $this->restore_personal_record('superflipbook_progress', $data);
     }
+
     /**
      * Per-page learner record.
      */
     protected function process_superflipbook_page($data) {
         $this->restore_personal_record('superflipbook_pages', $data);
     }
+
     /**
      * Signed acknowledgement.
      */
     protected function process_superflipbook_ack($data) {
         $this->restore_personal_record('superflipbook_ack', $data);
     }
+
     /**
      * Private annotation.
      */
     protected function process_superflipbook_bookmark($data) {
         $this->restore_personal_record('superflipbook_bookmarks', $data);
     }
+
     /**
      * Insert a personal record for the mapped learner.
      */
@@ -91,6 +97,7 @@ class restore_superflipbook_activity_structure_step extends restore_activity_str
             $DB->insert_record($table, $data);
         }
     }
+
     /**
      * Restore PDF files and introduction files.
      */

@@ -53,7 +53,7 @@ class reading_service {
      * @return array Current status.
      */
     public static function record($activity, $cm, $userid, $page, $pages, $seconds, $acknowledge,
-            $entered = false) {
+                                  $entered = false) {
         global $DB;
         if ($page < 1 || $pages < 1 || $pages > 20000 || $page > $pages) {
             throw new invalid_parameter_exception('Invalid page range');
@@ -70,7 +70,7 @@ class reading_service {
         $progress = $DB->get_record('superflipbook_progress', $key);
         if (!$progress) {
             $progress = (object)($key + ['totalseconds' => 0, 'maxpage' => 0,
-                'totalpages' => $pages, 'completed' => 0, 'firstview' => $now, 'lastview' => $now]);
+                    'totalpages' => $pages, 'completed' => 0, 'firstview' => $now, 'lastview' => $now]);
             $progress->id = $DB->insert_record('superflipbook_progress', $progress);
         }
         if ((int)$progress->totalpages !== (int)$pages) {
@@ -82,7 +82,7 @@ class reading_service {
         $firstpageview = !$pageprogress;
         if (!$pageprogress) {
             $pageprogress = (object)($pagekey + ['views' => 0, 'totalseconds' => 0,
-                'firstview' => $now, 'lastview' => $now]);
+                    'firstview' => $now, 'lastview' => $now]);
             $pageprogress->id = $DB->insert_record('superflipbook_pages', $pageprogress);
         }
         if ($entered || $firstpageview) {
@@ -98,9 +98,9 @@ class reading_service {
         if ($acknowledge && !empty($activity->requireack)) {
             if (!$DB->record_exists('superflipbook_ack', $key)) {
                 $DB->insert_record('superflipbook_ack', (object)($key + [
-                    'statement' => $activity->ackstatement, 'timecreated' => $now,
-                    'ipaddress' => !empty($activity->recordip) ? getremoteaddr() : null,
-                ]));
+                        'statement' => $activity->ackstatement, 'timecreated' => $now,
+                        'ipaddress' => !empty($activity->recordip) ? getremoteaddr() : null,
+                    ]));
                 $justacknowledged = true;
                 acknowledgement_recorded::create([
                     'context' => context_module::instance($cm->id), 'objectid' => $activity->id,

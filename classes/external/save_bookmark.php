@@ -49,6 +49,7 @@ class save_bookmark extends external_api {
             'note' => new external_value(PARAM_TEXT, 'Private note, up to 2000 characters'),
         ]);
     }
+
     /**
      * Store the bookmark for current user only.
      */
@@ -77,6 +78,7 @@ class save_bookmark extends external_api {
         }
         return ['saved' => true];
     }
+
     /**
      * Returns.
      */
