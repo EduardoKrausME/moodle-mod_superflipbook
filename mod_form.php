@@ -34,39 +34,57 @@ class mod_superflipbook_mod_form extends moodleform_mod {
      */
     public function definition() {
         $mform = $this->_form;
+
         $mform->addElement('header', 'general', get_string('general'));
+
         $mform->addElement('text', 'name', get_string('name'), ['size' => 64]);
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
         $this->standard_intro_elements();
+
         $mform->addElement('filemanager', 'pdf', get_string('pdfcontent', 'mod_superflipbook'), null,
-            ['maxfiles' => 1, 'accepted_types' => ['.pdf'], 'subdirs' => false]);
+            [
+                'accepted_types' => ['.pdf'],
+                'subdirs' => false,
+            ]);
         $mform->addRule('pdf', null, 'required');
+
         $mform->addElement('header', 'readingrules', get_string('readingrules', 'mod_superflipbook'));
+
         $mform->addElement('text', 'minpercentage', get_string('minpercentage', 'mod_superflipbook'));
         $mform->setType('minpercentage', PARAM_INT);
         $mform->setDefault('minpercentage', 100);
+
         $mform->addElement('text', 'minseconds', get_string('minseconds', 'mod_superflipbook'));
         $mform->setType('minseconds', PARAM_INT);
         $mform->setDefault('minseconds', 0);
+
         $mform->addElement('advcheckbox', 'requirelastpage', get_string('requirelastpage', 'mod_superflipbook'));
+
         $mform->addElement('text', 'requiredpages', get_string('requiredpages', 'mod_superflipbook'), ['size' => 40]);
         $mform->setType('requiredpages', PARAM_TEXT);
         $mform->addHelpButton('requiredpages', 'requiredpages', 'mod_superflipbook');
+
         $mform->addElement('advcheckbox', 'requireack', get_string('requireack', 'mod_superflipbook'));
+
         $mform->addElement('textarea', 'ackstatement', get_string('ackstatement', 'mod_superflipbook'),
             ['rows' => 3, 'cols' => 60]);
         $mform->setType('ackstatement', PARAM_TEXT);
         $mform->hideIf('ackstatement', 'requireack', 'notchecked');
+
         $mform->addElement('header', 'privacysection', get_string('privacysection', 'mod_superflipbook'));
+
         foreach (['allowdownload', 'allowprint', 'watermark', 'recordip'] as $field) {
             $mform->addElement('advcheckbox', $field, get_string($field, 'mod_superflipbook'));
         }
         $mform->setDefault('watermark', 1);
+
         $mform->addElement('text', 'grade', get_string('grade', 'mod_superflipbook'), ['size' => 8]);
         $mform->setType('grade', PARAM_INT);
         $mform->setDefault('grade', 100);
+
         $this->standard_coursemodule_elements();
+
         $this->add_action_buttons();
     }
 
