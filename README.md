@@ -2,13 +2,13 @@
 
 Super Flipbook is a Moodle activity that presents PDFs as interactive flipbooks while keeping learner progress, per-page reading metrics, and optionally an explicit acknowledgement. The activity is **not** an alternative PDF storage service: files are stored with Moodle's file API in `mod_superflipbook/content`, served through Moodle's authenticated pluginfile handler, and accompanied by normal capabilities and a course module.
 
-**Release target:** 1.0.0 (`2026101400`). **Target versions:** Moodle 4.1–5.3. **Current state:** local development candidate, not install-verified. The source snapshot may be committed on master but is not a tested production release. The dependency bundles have not been included in this source archive; execute the packaging step below before testing the reader.
+**Release target:** 1.0.0 (`2026101400`). **Target versions:** Moodle 4.1–5.3. **Current state:** local development candidate, not install-verified. The source snapshot may be committed on master but is not a tested production release. The bundled PDF.js and StPageFlip distributions are included in `thirdparty/`, and AMD-compatible copies are provided under `amd/src/` and `amd/build/` for Moodle's RequireJS loader.
 
 ## Installation
 
 1. Place this directory at `mod/superflipbook` inside a supported Moodle checkout.
-2. Execute `bash thirdparty/fetch-assets.sh` in a development environment with HTTPS network access. Review and pin the generated SHA-256 values and preserve third-party license notices.
-3. Check that `thirdparty/pdfjs/pdf.min.js`, `thirdparty/pdfjs/pdf.worker.min.js` and `thirdparty/pageflip/page-flip.browser.js` exist and are nonempty.
+2. Ensure `amd/build/pdfjs.min.js`, `amd/build/pageflip.min.js` and `thirdparty/pdfjs/pdf.worker.min.js` exist and are nonempty. The original distribution scripts are retained under `thirdparty/`.
+3. When rebuilding AMD modules with Moodle Grunt, regenerate the `amd/build/` files from the `amd/src/` sources before packaging.
 4. Run Moodle CLI upgrade: `php admin/cli/upgrade.php --non-interactive`.
 5. In a course, add a **Super Flipbook** activity and upload exactly one PDF.
 6. Configure optional reading conditions and grading. Use the teacher's report page to inspect progress, page statistics and the acceptance audit log.
@@ -50,7 +50,7 @@ moodle-plugin-ci behat --profile chrome
 - Teacher reports include date and group selectors. Page analytics currently show aggregate rows rather than drill-down traces; the acknowledgement audit is filterable by the same cohort/date controls.
 - Individual named acknowledgements are not cryptographically signed. IP recording is disabled by default.
 - Completion and gradebook behavior, core completion hooks, recovery after document updates, backup/restore, Privacy API and local_mcp integration require real Moodle-version testing.
-- PDF.js and StPageFlip must be fetched and bundled before installation; they are not embedded in the current archive.
+- The PDF.js worker is loaded separately; PDF.js and StPageFlip themselves use Moodle's AMD loader.
 
 ## License
 

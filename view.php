@@ -48,9 +48,7 @@ $PAGE->set_heading($course->fullname);
 $PAGE->requires->css(new moodle_url('/mod/superflipbook/styles.css'));
 $PAGE->requires->js_call_amd('mod_superflipbook/reader', 'init', [[
     'cmid' => $cm->id, 'pdfurl' => $pdfurl->out(false),
-    'pdfjs' => (new moodle_url('/mod/superflipbook/thirdparty/pdfjs/pdf.min.js'))->out(false),
     'worker' => (new moodle_url('/mod/superflipbook/thirdparty/pdfjs/pdf.worker.min.js'))->out(false),
-    'pageflip' => (new moodle_url('/mod/superflipbook/thirdparty/pageflip/page-flip.browser.js'))->out(false),
     'watermark' => !empty($activity->watermark) ? fullname($USER) . ' - ' . $USER->id : '',
 ]]);
 $completion = new completion_info($course);

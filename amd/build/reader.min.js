@@ -3,16 +3,9 @@
  * @copyright 2026 Eduardo Kraus
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['core/ajax', 'core/str', 'core/notification'], function(Ajax, Str, Notification) {
+define(['core/ajax', 'core/str', 'core/notification', 'mod_superflipbook/pdfjs',
+    'mod_superflipbook/pageflip'], function(Ajax, Str, Notification, pdfjsLib, pageflip) {
     'use strict';
-
-    const loadScript = (url) => new Promise((resolve, reject) => {
-        const el = document.createElement('script');
-        el.src = url;
-        el.onload = resolve;
-        el.onerror = reject;
-        document.head.appendChild(el);
-    });
 
     /** Init full flipbook and persist the current page on navigation and active reading. */
     const init = async (cfg) => {
@@ -76,13 +69,12 @@ define(['core/ajax', 'core/str', 'core/notification'], function(Ajax, Str, Notif
             send(false, true);
         };
         try {
-            await loadScript(cfg.pdfjs);
-            await loadScript(cfg.pageflip);
-            if (!window.pdfjsLib || !window.St || !window.St.PageFlip) {
+            if (!pdfjsLib || !pdfjsLib.getDocument || !pdfjsLib.GlobalWorkerOptions ||
+                    !pageflip || !pageflip.PageFlip) {
                 throw new Error('Missing bundled PDF.js or StPageFlip');
             }
-            window.pdfjsLib.GlobalWorkerOptions.workerSrc = cfg.worker;
-            pdf = await window.pdfjsLib.getDocument({url: cfg.pdfurl, withCredentials: true}).promise;
+            pdfjsLib.GlobalWorkerOptions.workerSrc = cfg.worker;
+            pdf = await pdfjsLib.getDocument({url: cfg.pdfurl, withCredentials: true}).promise;
             for (let p = 1; p <= pdf.numPages; p++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'sf-page';
@@ -97,7 +89,7 @@ define(['core/ajax', 'core/str', 'core/notification'], function(Ajax, Str, Notif
                 }
                 bookel.appendChild(wrap);
             }
-            book = new window.St.PageFlip(bookel, {
+            book = new pageflip.PageFlip(bookel, {
                 width: 540, height: 700, size: 'stretch', minWidth: 250, maxWidth: 1000,
                 minHeight: 340, maxHeight: 1200, showCover: false, usePortrait: true,
                 maxShadowOpacity: 0.25, mobileScrollSupport: false
