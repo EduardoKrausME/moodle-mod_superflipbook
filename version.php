@@ -23,8 +23,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026101501;
-$plugin->release = '1.0.3';
+$plugin->version = 2026101502;
+$plugin->release = '1.0.4';
 $plugin->requires = 2022112800;
 $plugin->component = 'mod_superflipbook';
 $plugin->maturity = MATURITY_STABLE;
