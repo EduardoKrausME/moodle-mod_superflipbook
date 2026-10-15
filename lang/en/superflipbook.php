@@ -47,6 +47,7 @@ $string['eventacknowledged'] = 'Document acknowledgement recorded';
 $string['exportcsv'] = 'Export CSV';
 $string['fromdate'] = 'From date';
 $string['fullscreen'] = 'Fullscreen';
+$string['grade'] = 'Grade';
 $string['ipaddress'] = 'IP address';
 $string['lastview'] = 'Last viewed';
 $string['learners'] = 'Learners';

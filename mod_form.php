@@ -63,7 +63,7 @@ class mod_superflipbook_mod_form extends moodleform_mod {
             $mform->addElement('advcheckbox', $field, get_string($field, 'mod_superflipbook'));
         }
         $mform->setDefault('watermark', 1);
-        $mform->addElement('text', 'grade', get_string('grade'), ['size' => 8]);
+        $mform->addElement('text', 'grade', get_string('grade', 'mod_superflipbook'), ['size' => 8]);
         $mform->setType('grade', PARAM_INT);
         $mform->setDefault('grade', 100);
         $this->standard_coursemodule_elements();
