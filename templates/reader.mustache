@@ -13,7 +13,7 @@
                     data-pdf-url="{{url}}" data-pdf-name="{{name}}">
                 <span class="sf-gallery-cover">
                     {{#hasthumb}}<img src="{{thumburl}}" alt="" loading="lazy">{{/hasthumb}}
-                    {{^hasthumb}}<span class="sf-gallery-placeholder" aria-hidden="true">PDF</span>{{/hasthumb}}
+                    {{^hasthumb}}<span class="sf-gallery-placeholder" aria-hidden="true">{{#str}}pdfplaceholder, mod_superflipbook{{/str}}</span>{{/hasthumb}}
                 </span>
                 <span class="sf-gallery-name">{{name}}</span>
             </button>
@@ -23,17 +23,17 @@
         <div class="sf-dialog" role="dialog" aria-modal="true"
              aria-label="{{#str}}pdftitle, mod_superflipbook{{/str}}">
             <div class="app-shell" id="app">
-                <section class="reader-section" aria-label="Leitor de livros PDF">
+                <section class="reader-section" aria-label="{{#str}}pdftitle, mod_superflipbook{{/str}}">
                     <div class="reader-topline">
                         <div class="reader-publication">
                             <div>
-                                <strong id="document-title">Documento PDF</strong>
-                                <span id="document-details">AGUARDANDO PDF</span>
+                                <strong id="document-title">{{#str}}pdfcontent, mod_superflipbook{{/str}}</strong>
+                                <span id="document-details">{{#str}}waitingpdf, mod_superflipbook{{/str}}</span>
                             </div>
                         </div>
-                        <div class="reader-toolbar" role="toolbar" aria-label="Ferramentas do leitor">
+                        <div class="reader-toolbar" role="toolbar" aria-label="{{#str}}toolbar, mod_superflipbook{{/str}}">
                             <button type="button" class="tool-button" id="mode-button" data-action="mode"
-                                    title="Exibir uma página" aria-label="Exibir uma página" aria-pressed="true">
+                                    title="{{#str}}singlepage, mod_superflipbook{{/str}}" aria-label="{{#str}}singlepage, mod_superflipbook{{/str}}" aria-pressed="true">
                                 <svg class="view-mode-spread" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                                      aria-hidden="true"
@@ -49,16 +49,16 @@
                                 </svg>
                             </button>
                             <span class="toolbar-divider"></span>
-                            <button type="button" class="tool-button" data-action="zoom-out" title="Diminuir zoom"
-                                    aria-label="Diminuir zoom"> −
+                            <button type="button" class="tool-button" data-action="zoom-out" title="{{#str}}zoomout, mod_superflipbook{{/str}}"
+                                    aria-label="{{#str}}zoomout, mod_superflipbook{{/str}}"> −
                             </button>
                             <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
-                            <button type="button" class="tool-button" data-action="zoom-in" title="Aumentar zoom"
-                                    aria-label="Aumentar zoom"> +
+                            <button type="button" class="tool-button" data-action="zoom-in" title="{{#str}}zoomin, mod_superflipbook{{/str}}"
+                                    aria-label="{{#str}}zoomin, mod_superflipbook{{/str}}"> +
                             </button>
                             <span class="toolbar-divider"></span>
                             <button type="button" class="tool-button" id="fullscreen-button" data-action="fullscreen"
-                                    title="Tela cheia" aria-label="Tela cheia" aria-pressed="false">
+                                    title="{{#str}}fullscreen, mod_superflipbook{{/str}}" aria-label="{{#str}}fullscreen, mod_superflipbook{{/str}}" aria-pressed="false">
                                 <svg class="fullscreen-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                                      aria-hidden="true"
@@ -80,33 +80,33 @@
                     </div>
                     <div class="book-stage" id="book-stage">
                         <button type="button" class="turn-arrow turn-arrow-prev" data-action="prev"
-                                aria-label="Página anterior"> ‹
+                                aria-label="{{#str}}previouspage, mod_superflipbook{{/str}}"> ‹
                         </button>
                         <div class="book-viewport" id="book-viewport">
                             <div class="book-spread" id="book-spread" aria-live="polite" aria-atomic="true"></div>
                         </div>
                         <button type="button" class="turn-arrow turn-arrow-next" data-action="next"
-                                aria-label="Próxima página"> ›
+                                aria-label="{{#str}}nextpage, mod_superflipbook{{/str}}"> ›
                         </button>
                         <div class="reader-loading" id="reader-loading" hidden><span class="loader"></span><span
-                                id="loading-message">Preparando as páginas...</span></div>
+                                id="loading-message">{{#str}}preparingpages, mod_superflipbook{{/str}}</span></div>
                     </div>
                     <div class="reader-bottomline">
                         <div class="paging-actions">
-                            <button type="button" class="nav-button" data-action="first" aria-label="Primeira página"
-                                    title="Primeira página">⇤
+                            <button type="button" class="nav-button" data-action="first" aria-label="{{#str}}firstpage, mod_superflipbook{{/str}}"
+                                    title="{{#str}}firstpage, mod_superflipbook{{/str}}">⇤
                             </button>
-                            <span>Página</span>
+                            <span>{{#str}}page, mod_superflipbook{{/str}}</span>
                             <input id="page-number" type="number" min="1" max="1" value="1"
-                                   aria-label="Número da página" inputmode="numeric">
-                            <span>de <strong id="page-count">0</strong></span>
-                            <button type="button" class="nav-button" data-action="last" aria-label="Última página"
-                                    title="Última página">⇥
+                                   aria-label="{{#str}}pageinputlabel, mod_superflipbook{{/str}}" inputmode="numeric">
+                            <span>{{#str}}pageof, mod_superflipbook{{/str}} <strong id="page-count">0</strong></span>
+                            <button type="button" class="nav-button" data-action="last" aria-label="{{#str}}lastpage, mod_superflipbook{{/str}}"
+                                    title="{{#str}}lastpage, mod_superflipbook{{/str}}">⇥
                             </button>
                         </div>
                         <div class="progress-control">
                             <input type="range" id="page-progress" min="1" max="1" value="1"
-                                   aria-label="Navegar pelas páginas">
+                                   aria-label="{{#str}}navigatepages, mod_superflipbook{{/str}}">
                             <span id="progress-label">0%</span></div>
                     </div>
                     <p class="reader-error" id="reader-error" role="alert" hidden></p>

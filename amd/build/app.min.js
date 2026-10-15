@@ -6,6 +6,8 @@
 define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
     'use strict';
     const init = (cfg) => {
+        const strings = cfg.strings;
+        const translated = (key, value) => strings[key].replace('{$a}', String(value));
         const root = document.querySelector('[data-region="superflipbook"]');
         if (!root) {
             return;
@@ -103,7 +105,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
         ui.error.hidden = false;
     }
 
-    function setLoading(show, message = 'Preparando as páginas...') {
+    function setLoading(show, message = strings.preparingpages) {
         ui.loading.hidden = !show;
         ui.loadingMessage.textContent = message;
     }
@@ -115,7 +117,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
                 return mod;
             }).catch((error) => {
                 pdfjsPromise = null;
-                throw new Error('Não foi possível carregar o PDF.js. Verifique sua conexão com a internet.');
+                throw new Error(strings.pdfjsloaderror);
             });
         }
         return pdfjsPromise;
@@ -126,7 +128,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
             .replace(/\.pdf$/i, '')
             .replace(/[_+.~\u2010-\u2015-]+/g, ' ')
             .replace(/\s+/g, ' ')
-            .trim() || 'Documento PDF';
+            .trim() || strings.pdfcontent;
     }
 
     async function loadPDF(source) {
@@ -134,7 +136,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
         const epoch = ++state.epoch;
         state.busy = true;
         status(null);
-        setLoading(true, 'Abrindo arquivo PDF...');
+        setLoading(true, strings.openingpdf);
         try {
             let options;
             let title;
@@ -142,7 +144,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
                 // Relative URLs resolve beside index.html; absolute HTTPS URLs also work when CORS allows.
                 const address = new URL(source, window.location.href);
                 if (address.protocol !== 'https:' && address.protocol !== 'http:') {
-                    throw new Error('Use uma URL HTTP ou HTTPS para o arquivo PDF.');
+                    throw new Error(strings.pdfurlerror);
                 }
                 options = {
                     url: address.href,
@@ -150,31 +152,31 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
                     isEvalSupported: false,
                     useSystemFonts: true
                 };
-                const filename = address.pathname.split('/').pop() || 'Documento PDF';
+                const filename = address.pathname.split('/').pop() || strings.pdfcontent;
                 try {
                     title = decodeURIComponent(filename);
                 } catch (_) {
                     title = filename;
                 }
-                title = title.replace(/\.pdf$/i, '') || 'Documento PDF';
+                title = title.replace(/\.pdf$/i, '') || strings.pdfcontent;
             } else {
                 const header = await source.slice(0, 1024).text();
                 if (!header.includes('%PDF-')) {
-                    throw new Error('Este arquivo não parece ser um PDF válido.');
+                    throw new Error(strings.pdfinvalid);
                 }
                 options = {
                     data: new Uint8Array(await source.arrayBuffer()),
                     isEvalSupported: false,
                     useSystemFonts: true
                 };
-                title = (source.name || 'Documento PDF').replace(/\.pdf$/i, '');
+                title = (source.name || strings.pdfcontent).replace(/\.pdf$/i, '');
             }
             const library = await pdfjs();
             if (epoch !== state.epoch) return;
             const task = library.getDocument(options);
             state.loadTask = task;
             task.onPassword = (submit) => {
-                const password = window.prompt('Este PDF é protegido. Digite a senha para abri-lo:');
+                const password = window.prompt(strings.pdfpasswordprompt);
                 if (password === null) {
                     void task.destroy();
                     return;
@@ -196,15 +198,14 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
             state.visiblePages = [];
             state.layout = null;
             ui.title.textContent = formatDocumentTitle(title);
-            ui.details.textContent = `ARQUIVO PDF · ${pdf.numPages} ${pdf.numPages === 1 ? 'PÁGINA' : 'PÁGINAS'}`;
+            ui.details.textContent = `${strings.pdfdetailslabel} · ${pdf.numPages} ${pdf.numPages === 1 ? strings.page : strings.pages}`;
             await renderBook(epoch);
             trackPage();
             status(null);
         } catch (error) {
             if (epoch === state.epoch) {
-                ui.details.textContent = 'NÃO FOI POSSÍVEL ABRIR O DOCUMENTO';
-                status('Erro ao carregar PDF: ' + (error instanceof Error ? error.message : 'Erro desconhecido.') +
-                    ' Verifique o endereço, as permissões de acesso e o CORS, se o PDF estiver em outro domínio.');
+                ui.details.textContent = strings.pdfopenfailed;
+                status(translated('pdfloaderror', error instanceof Error ? error.message : strings.unknownerror));
             }
         } finally {
             if (epoch === state.epoch) {
@@ -237,7 +238,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
             canvas.width = Math.ceil(viewport.width);
             canvas.height = Math.ceil(viewport.height);
             const context = canvas.getContext('2d', {alpha: false});
-            if (!context) throw new Error('O navegador não conseguiu criar uma área de desenho.');
+            if (!context) throw new Error(strings.canvaserror);
             await page.render({canvasContext: context, viewport}).promise;
             const rendered = {
                 src: canvas.toDataURL('image/png'),
@@ -271,11 +272,11 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
     async function pdfPage(number, side, epoch) {
         const element = document.createElement('article');
         element.className = `page page-${side} pdf-page`;
-        element.setAttribute('aria-label', `Página ${number}`);
+        element.setAttribute('aria-label', translated('pagenumber', number));
         const content = document.createElement('div');
         content.className = 'page-contents';
         const image = document.createElement('img');
-        image.alt = `Página ${number} do documento`;
+        image.alt = translated('pdfpagealt', number);
         image.decoding = 'async';
         const rendered = await renderPdfImage(number, epoch);
         image.src = rendered.src;
@@ -372,7 +373,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
         ui.viewport.style.transform = `scale(${state.zoom})`;
         const spread = isSpread();
         ui.mode.setAttribute('aria-pressed', String(spread));
-        const modeLabel = spread ? 'Exibir uma página' : 'Exibir duas páginas';
+        const modeLabel = spread ? strings.singlepage : strings.doublepage;
         ui.mode.setAttribute('title', modeLabel);
         ui.mode.setAttribute('aria-label', modeLabel);
         ui.mode.querySelector('.view-mode-spread').hidden = !spread;
@@ -446,7 +447,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
                 leaf.remove();
             }
         } catch (error) {
-            status('Erro ao renderizar a página. ' + (error instanceof Error ? error.message : ''));
+            status(translated('pagerendererror', error instanceof Error ? error.message : strings.unknownerror));
         } finally {
             state.busy = false;
             refreshControls();
@@ -463,7 +464,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
             document.webkitFullscreenElement === ui.reader;
         ui.fullscreen.querySelector('.fullscreen-enter').hidden = active;
         ui.fullscreen.querySelector('.fullscreen-exit').hidden = !active;
-        const label = active ? 'Sair da tela cheia' : 'Tela cheia';
+        const label = active ? strings.exitfullscreen : strings.fullscreen;
         ui.fullscreen.setAttribute('aria-label', label);
         ui.fullscreen.setAttribute('title', label);
         ui.fullscreen.setAttribute('aria-pressed', String(active));
@@ -473,19 +474,17 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
         try {
             if (document.fullscreenElement || document.webkitFullscreenElement) {
                 const exit = document.exitFullscreen || document.webkitExitFullscreen;
-                if (!exit) throw new Error('O navegador não suporta sair da tela cheia.');
+                if (!exit) throw new Error(strings.fullscreenexitunsupported);
                 await exit.call(document);
             } else {
                 // Called synchronously from the click handler, preserving the user gesture.
                 const enter = ui.reader.requestFullscreen || ui.reader.webkitRequestFullscreen;
-                if (!enter) throw new Error('O navegador não suporta a API de tela cheia.');
+                if (!enter) throw new Error(strings.fullscreenenterunsupported);
                 await enter.call(ui.reader);
             }
             status(null);
         } catch (error) {
-            status('Falha ao alternar tela cheia: ' +
-                (error instanceof Error ? error.message : 'Operação não permitida.') +
-                ' Se estiver em iframe, habilite allowfullscreen no elemento iframe.');
+            status(translated('fullscreenerror', error instanceof Error ? error.message : strings.operationdenied));
         } finally {
             refreshFullscreenControls();
         }
@@ -637,7 +636,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
             canvas.height = 0;
             page.cleanup();
             if (!blob) {
-                throw new Error('Unable to create a PDF thumbnail');
+                throw new Error(strings.thumbcreateerror);
             }
             const form = new FormData();
             form.append('id', String(cfg.cmid));
@@ -647,7 +646,7 @@ define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
             const response = await fetch(cfg.thumbendpoint, {method: 'POST',
                 credentials: 'same-origin', body: form});
             if (!response.ok) {
-                throw new Error('Moodle did not accept the PDF thumbnail');
+                throw new Error(strings.thumbuploaderror);
             }
             const data = await response.json();
             if (data.url) {
