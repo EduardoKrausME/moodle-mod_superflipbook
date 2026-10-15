@@ -3,12 +3,18 @@
 }}
 <div class="mod-superflipbook-report">
     <h2>{{#str}}report, mod_superflipbook{{/str}}: {{title}}</h2>
-    <p>{{#str}}readers, mod_superflipbook{{/str}}: {{readers}} · {{#str}}ackcount, mod_superflipbook{{/str}}: {{ackcount}}</p>
+    <p>
+        {{#str}}readers, mod_superflipbook{{/str}}:
+        {{readers}}
+        · {{#str}}ackcount, mod_superflipbook{{/str}}:
+        {{ackcount}}
+    </p>
     <form method="get" action="{{formurl}}" class="d-flex flex-wrap gap-2 mb-3">
         <input type="hidden" name="id" value="{{cmid}}">
         <label>{{#str}}group{{/str}}
             <select name="group" class="form-select">
-            {{#groups}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>{{/groups}}
+                {{#groups}}
+                    <option value="{{value}}" {{#selected}}selected{{/selected}}>{{name}}</option>{{/groups}}
             </select>
         </label>
         <label>{{#str}}fromdate, mod_superflipbook{{/str}}
@@ -22,36 +28,78 @@
     <a href="{{{exporturl}}}" class="btn btn-secondary">{{#str}}exportcsv, mod_superflipbook{{/str}}</a>
     <h3>{{#str}}learners, mod_superflipbook{{/str}}</h3>
     <div class="table-responsive">
-        <table class="table table-striped"><thead><tr>
-            <th>{{#str}}fullname{{/str}}</th><th>{{#str}}email{{/str}}</th>
-            <th>{{#str}}maxpage, mod_superflipbook{{/str}}</th>
-            <th>{{#str}}totalpages, mod_superflipbook{{/str}}</th>
-            <th>{{#str}}activetime, mod_superflipbook{{/str}}</th>
-            <th>{{#str}}completion, core_completion{{/str}}</th>
-            <th>{{#str}}lastview, mod_superflipbook{{/str}}</th>
-        </tr></thead><tbody>
-            {{#learners}}<tr><td>{{name}}</td><td>{{email}}</td><td>{{maxpage}}</td>
-                <td>{{totalpages}}</td><td>{{totalseconds}}</td><td>{{completed}}</td><td>{{lastview}}</td></tr>{{/learners}}
-        </tbody></table>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{#str}}fullname{{/str}}</th>
+                <th>{{#str}}email{{/str}}</th>
+                <th>{{#str}}maxpage, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}totalpages, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}activetime, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}completion, core_completion{{/str}}</th>
+                <th>{{#str}}lastview, mod_superflipbook{{/str}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#learners}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{email}}</td>
+                    <td>{{maxpage}}</td>
+                    <td>{{totalpages}}</td>
+                    <td>{{totalseconds}}</td>
+                    <td>{{completed}}</td>
+                    <td>{{lastview}}</td>
+                </tr>{{/learners}}
+            </tbody>
+        </table>
     </div>
     <h3>{{#str}}pageanalytics, mod_superflipbook{{/str}}</h3>
-    <div class="table-responsive"><table class="table table-striped"><thead><tr>
-        <th>{{#str}}page, mod_superflipbook{{/str}}</th>
-        <th>{{#str}}readers, mod_superflipbook{{/str}}</th>
-        <th>{{#str}}views, mod_superflipbook{{/str}}</th>
-        <th>{{#str}}activetime, mod_superflipbook{{/str}}</th>
-        <th>{{#str}}dropoff, mod_superflipbook{{/str}}</th>
-    </tr></thead><tbody>
-        {{#pages}}<tr><td>{{page}}</td><td>{{learners}}</td><td>{{views}}</td>
-            <td>{{seconds}}</td><td>{{dropoff}}</td></tr>{{/pages}}
-    </tbody></table></div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{#str}}page, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}readers, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}views, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}activetime, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}dropoff, mod_superflipbook{{/str}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#pages}}
+                <tr>
+                    <td>{{page}}</td>
+                    <td>{{learners}}</td>
+                    <td>{{views}}</td>
+                    <td>{{seconds}}</td>
+                    <td>{{dropoff}}</td>
+                </tr>{{/pages}}
+            </tbody>
+        </table>
+    </div>
     <h3>{{#str}}audittrail, mod_superflipbook{{/str}}</h3>
-    <div class="table-responsive"><table class="table table-striped"><thead><tr>
-        <th>{{#str}}fullname{{/str}}</th><th>{{#str}}email{{/str}}</th>
-        <th>{{#str}}ackstatement, mod_superflipbook{{/str}}</th>
-        <th>{{#str}}date{{/str}}</th><th>{{#str}}ipaddress, mod_superflipbook{{/str}}</th>
-    </tr></thead><tbody>
-        {{#acknowledgements}}<tr><td>{{name}}</td><td>{{email}}</td><td>{{statement}}</td>
-            <td>{{time}}</td><td>{{ip}}</td></tr>{{/acknowledgements}}
-    </tbody></table></div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{#str}}fullname{{/str}}</th>
+                <th>{{#str}}email{{/str}}</th>
+                <th>{{#str}}ackstatement, mod_superflipbook{{/str}}</th>
+                <th>{{#str}}date{{/str}}</th>
+                <th>{{#str}}ipaddress, mod_superflipbook{{/str}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#acknowledgements}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{email}}</td>
+                    <td>{{statement}}</td>
+                    <td>{{time}}</td>
+                    <td>{{ip}}</td>
+                </tr>{{/acknowledgements}}
+            </tbody>
+        </table>
+    </div>
 </div>
