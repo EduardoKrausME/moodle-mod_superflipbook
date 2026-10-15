@@ -77,6 +77,36 @@ course_module_viewed::create([
     'context' => $context,
 ])->trigger();
 
+$PAGE->requires->strings_for_js([
+    'canvaserror',
+    'doublepage',
+    'exitfullscreen',
+    'fullscreen',
+    'fullscreenenterunsupported',
+    'fullscreenerror',
+    'fullscreenexitunsupported',
+    'openingpdf',
+    'operationdenied',
+    'page',
+    'pagenumber',
+    'pagerendererror',
+    'pages',
+    'pdfcontent',
+    'pdfdetailslabel',
+    'pdfinvalid',
+    'pdfjsloaderror',
+    'pdfloaderror',
+    'pdfopenfailed',
+    'pdfpagealt',
+    'pdfpasswordprompt',
+    'pdfurlerror',
+    'preparingpages',
+    'singlepage',
+    'thumbcreateerror',
+    'thumbuploaderror',
+    'unknownerror',
+], 'mod_superflipbook');
+
 $PAGE->requires->js_call_amd('mod_superflipbook/app', 'init', [[
     'cmid' => (int)$cm->id,
     'sesskey' => sesskey(),

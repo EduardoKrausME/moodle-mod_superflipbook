@@ -3,58 +3,14 @@
  * @copyright 2026 Eduardo Kraus
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notification, Str) {
+define(['core/ajax', 'core/notification'], function(Ajax, Notification) {
     'use strict';
 
-    // Use Moodle's cached language-string service instead of bloating js_call_amd arguments.
-    const STRING_KEYS = [
-        "canvaserror",
-        "doublepage",
-        "exitfullscreen",
-        "fullscreen",
-        "fullscreenenterunsupported",
-        "fullscreenerror",
-        "fullscreenexitunsupported",
-        "openingpdf",
-        "operationdenied",
-        "page",
-        "pagenumber",
-        "pagerendererror",
-        "pages",
-        "pdfcontent",
-        "pdfdetailslabel",
-        "pdfinvalid",
-        "pdfjsloaderror",
-        "pdfloaderror",
-        "pdfopenfailed",
-        "pdfpagealt",
-        "pdfpasswordprompt",
-        "pdfurlerror",
-        "preparingpages",
-        "singlepage",
-        "thumbcreateerror",
-        "thumbuploaderror",
-        "unknownerror"
-];
-
-    const init = async (cfg) => {
+    const init = (cfg) => {
         const root = document.querySelector('[data-region="superflipbook"]');
         if (!root) {
             return;
         }
-        let translations;
-        try {
-            // get_strings works on Moodle 4.1+; getStrings only exists on newer releases.
-            // Keep the {$a} placeholder intact so dynamic messages can be formatted locally.
-            translations = await Str.get_strings(STRING_KEYS.map((key) => ({
-                key, component: 'mod_superflipbook', param: '{$a}'
-            })));
-        } catch (error) {
-            Notification.exception(error);
-            return;
-        }
-        const strings = Object.fromEntries(STRING_KEYS.map((key, index) => [key, translations[index]]));
-        const translated = (key, value) => strings[key].replace('{$a}', String(value));
         const overlay = root.querySelector('[data-region="overlay"]');
         const cards = [...root.querySelectorAll('[data-pdf-id]')];
         const firstFileId = cards[0]?.dataset.pdfId;
@@ -148,7 +104,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
         ui.error.hidden = false;
     }
 
-    function setLoading(show, message = strings.preparingpages) {
+    function setLoading(show, message = M.util.get_string('preparingpages', 'mod_superflipbook')) {
         ui.loading.hidden = !show;
         ui.loadingMessage.textContent = message;
     }
@@ -160,7 +116,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
                 return mod;
             }).catch((error) => {
                 pdfjsPromise = null;
-                throw new Error(strings.pdfjsloaderror);
+                throw new Error(M.util.get_string('pdfjsloaderror', 'mod_superflipbook'));
             });
         }
         return pdfjsPromise;
@@ -171,7 +127,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
             .replace(/\.pdf$/i, '')
             .replace(/[_+.~\u2010-\u2015-]+/g, ' ')
             .replace(/\s+/g, ' ')
-            .trim() || strings.pdfcontent;
+            .trim() || M.util.get_string('pdfcontent', 'mod_superflipbook');
     }
 
     async function loadPDF(source) {
@@ -179,7 +135,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
         const epoch = ++state.epoch;
         state.busy = true;
         status(null);
-        setLoading(true, strings.openingpdf);
+        setLoading(true, M.util.get_string('openingpdf', 'mod_superflipbook'));
         try {
             let options;
             let title;
@@ -187,7 +143,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
                 // Relative URLs resolve beside index.html; absolute HTTPS URLs also work when CORS allows.
                 const address = new URL(source, window.location.href);
                 if (address.protocol !== 'https:' && address.protocol !== 'http:') {
-                    throw new Error(strings.pdfurlerror);
+                    throw new Error(M.util.get_string('pdfurlerror', 'mod_superflipbook'));
                 }
                 options = {
                     url: address.href,
@@ -195,31 +151,31 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
                     isEvalSupported: false,
                     useSystemFonts: true
                 };
-                const filename = address.pathname.split('/').pop() || strings.pdfcontent;
+                const filename = address.pathname.split('/').pop() || M.util.get_string('pdfcontent', 'mod_superflipbook');
                 try {
                     title = decodeURIComponent(filename);
                 } catch (_) {
                     title = filename;
                 }
-                title = title.replace(/\.pdf$/i, '') || strings.pdfcontent;
+                title = title.replace(/\.pdf$/i, '') || M.util.get_string('pdfcontent', 'mod_superflipbook');
             } else {
                 const header = await source.slice(0, 1024).text();
                 if (!header.includes('%PDF-')) {
-                    throw new Error(strings.pdfinvalid);
+                    throw new Error(M.util.get_string('pdfinvalid', 'mod_superflipbook'));
                 }
                 options = {
                     data: new Uint8Array(await source.arrayBuffer()),
                     isEvalSupported: false,
                     useSystemFonts: true
                 };
-                title = (source.name || strings.pdfcontent).replace(/\.pdf$/i, '');
+                title = (source.name || M.util.get_string('pdfcontent', 'mod_superflipbook')).replace(/\.pdf$/i, '');
             }
             const library = await pdfjs();
             if (epoch !== state.epoch) return;
             const task = library.getDocument(options);
             state.loadTask = task;
             task.onPassword = (submit) => {
-                const password = window.prompt(strings.pdfpasswordprompt);
+                const password = window.prompt(M.util.get_string('pdfpasswordprompt', 'mod_superflipbook'));
                 if (password === null) {
                     void task.destroy();
                     return;
@@ -241,14 +197,15 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
             state.visiblePages = [];
             state.layout = null;
             ui.title.textContent = formatDocumentTitle(title);
-            ui.details.textContent = `${strings.pdfdetailslabel} · ${pdf.numPages} ${pdf.numPages === 1 ? strings.page : strings.pages}`;
+            ui.details.textContent = `${M.util.get_string('pdfdetailslabel', 'mod_superflipbook')} · ${pdf.numPages} ${pdf.numPages === 1 ? M.util.get_string('page', 'mod_superflipbook') : M.util.get_string('pages', 'mod_superflipbook')}`;
             await renderBook(epoch);
             trackPage();
             status(null);
         } catch (error) {
             if (epoch === state.epoch) {
-                ui.details.textContent = strings.pdfopenfailed;
-                status(translated('pdfloaderror', error instanceof Error ? error.message : strings.unknownerror));
+                ui.details.textContent = M.util.get_string('pdfopenfailed', 'mod_superflipbook');
+                status(M.util.get_string('pdfloaderror', 'mod_superflipbook',
+                    error instanceof Error ? error.message : M.util.get_string('unknownerror', 'mod_superflipbook')));
             }
         } finally {
             if (epoch === state.epoch) {
@@ -281,7 +238,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
             canvas.width = Math.ceil(viewport.width);
             canvas.height = Math.ceil(viewport.height);
             const context = canvas.getContext('2d', {alpha: false});
-            if (!context) throw new Error(strings.canvaserror);
+            if (!context) throw new Error(M.util.get_string('canvaserror', 'mod_superflipbook'));
             await page.render({canvasContext: context, viewport}).promise;
             const rendered = {
                 src: canvas.toDataURL('image/png'),
@@ -315,11 +272,11 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
     async function pdfPage(number, side, epoch) {
         const element = document.createElement('article');
         element.className = `page page-${side} pdf-page`;
-        element.setAttribute('aria-label', translated('pagenumber', number));
+        element.setAttribute('aria-label', M.util.get_string('pagenumber', 'mod_superflipbook', number));
         const content = document.createElement('div');
         content.className = 'page-contents';
         const image = document.createElement('img');
-        image.alt = translated('pdfpagealt', number);
+        image.alt = M.util.get_string('pdfpagealt', 'mod_superflipbook', number);
         image.decoding = 'async';
         const rendered = await renderPdfImage(number, epoch);
         image.src = rendered.src;
@@ -416,7 +373,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
         ui.viewport.style.transform = `scale(${state.zoom})`;
         const spread = isSpread();
         ui.mode.setAttribute('aria-pressed', String(spread));
-        const modeLabel = spread ? strings.singlepage : strings.doublepage;
+        const modeLabel = spread ? M.util.get_string('singlepage', 'mod_superflipbook') : M.util.get_string('doublepage', 'mod_superflipbook');
         ui.mode.setAttribute('title', modeLabel);
         ui.mode.setAttribute('aria-label', modeLabel);
         ui.mode.querySelector('.view-mode-spread').hidden = !spread;
@@ -490,7 +447,8 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
                 leaf.remove();
             }
         } catch (error) {
-            status(translated('pagerendererror', error instanceof Error ? error.message : strings.unknownerror));
+            status(M.util.get_string('pagerendererror', 'mod_superflipbook',
+                error instanceof Error ? error.message : M.util.get_string('unknownerror', 'mod_superflipbook')));
         } finally {
             state.busy = false;
             refreshControls();
@@ -507,7 +465,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
             document.webkitFullscreenElement === ui.reader;
         ui.fullscreen.querySelector('.fullscreen-enter').hidden = active;
         ui.fullscreen.querySelector('.fullscreen-exit').hidden = !active;
-        const label = active ? strings.exitfullscreen : strings.fullscreen;
+        const label = active ? M.util.get_string('exitfullscreen', 'mod_superflipbook') : M.util.get_string('fullscreen', 'mod_superflipbook');
         ui.fullscreen.setAttribute('aria-label', label);
         ui.fullscreen.setAttribute('title', label);
         ui.fullscreen.setAttribute('aria-pressed', String(active));
@@ -517,17 +475,18 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
         try {
             if (document.fullscreenElement || document.webkitFullscreenElement) {
                 const exit = document.exitFullscreen || document.webkitExitFullscreen;
-                if (!exit) throw new Error(strings.fullscreenexitunsupported);
+                if (!exit) throw new Error(M.util.get_string('fullscreenexitunsupported', 'mod_superflipbook'));
                 await exit.call(document);
             } else {
                 // Called synchronously from the click handler, preserving the user gesture.
                 const enter = ui.reader.requestFullscreen || ui.reader.webkitRequestFullscreen;
-                if (!enter) throw new Error(strings.fullscreenenterunsupported);
+                if (!enter) throw new Error(M.util.get_string('fullscreenenterunsupported', 'mod_superflipbook'));
                 await enter.call(ui.reader);
             }
             status(null);
         } catch (error) {
-            status(translated('fullscreenerror', error instanceof Error ? error.message : strings.operationdenied));
+            status(M.util.get_string('fullscreenerror', 'mod_superflipbook',
+                error instanceof Error ? error.message : M.util.get_string('operationdenied', 'mod_superflipbook')));
         } finally {
             refreshFullscreenControls();
         }
@@ -679,7 +638,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
             canvas.height = 0;
             page.cleanup();
             if (!blob) {
-                throw new Error(strings.thumbcreateerror);
+                throw new Error(M.util.get_string('thumbcreateerror', 'mod_superflipbook'));
             }
             const form = new FormData();
             form.append('id', String(cfg.cmid));
@@ -689,7 +648,7 @@ define(['core/ajax', 'core/notification', 'core/str'], function(Ajax, Notificati
             const response = await fetch(cfg.thumbendpoint, {method: 'POST',
                 credentials: 'same-origin', body: form});
             if (!response.ok) {
-                throw new Error(strings.thumbuploaderror);
+                throw new Error(M.util.get_string('thumbuploaderror', 'mod_superflipbook'));
             }
             const data = await response.json();
             if (data.url) {
