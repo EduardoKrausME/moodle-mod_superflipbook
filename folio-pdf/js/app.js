@@ -43,7 +43,7 @@
     const state = {
         pdf: null, file: null, page: 1, total: 0, zoom: 1,
         preferredSpread: savedSpreadPreference(), busy: false, epoch: 0,
-        cache: new Map(), pending: new Map(), loadTask: null
+        cache: new Map(), pending: new Map(), visiblePages: [], layout: null, loadTask: null
     };
     let pdfjsPromise;
 
@@ -144,6 +144,8 @@
             state.total = pdf.numPages;
             state.cache.clear();
             state.pending.clear();
+            state.visiblePages = [];
+            state.layout = null;
             ui.title.textContent = title;
             ui.details.textContent = `ARQUIVO PDF · ${pdf.numPages} ${pdf.numPages === 1 ? 'PÁGINA' : 'PÁGINAS'}`;
             await renderBook(epoch);
@@ -187,15 +189,19 @@
             const context = canvas.getContext('2d', {alpha: false});
             if (!context) throw new Error('O navegador não conseguiu criar uma área de desenho.');
             await page.render({canvasContext: context, viewport}).promise;
-            const src = canvas.toDataURL('image/png');
+            const rendered = {
+                src: canvas.toDataURL('image/png'),
+                width: initial.width,
+                height: initial.height
+            };
             canvas.width = 0;
             canvas.height = 0;
             page.cleanup();
             if (epoch === state.epoch && state.pdf === currentPdf) {
-                state.cache.set(pageNumber, src);
+                state.cache.set(pageNumber, rendered);
                 trimCache();
             }
-            return src;
+            return rendered;
         })();
         state.pending.set(pageNumber, promise);
         try {
@@ -221,29 +227,81 @@
         const image = document.createElement('img');
         image.alt = `Página ${number} do documento`;
         image.decoding = 'async';
-        image.src = await renderPdfImage(number, epoch);
+        const rendered = await renderPdfImage(number, epoch);
+        image.src = rendered.src;
         content.append(image);
         element.append(content);
-        return element;
+        return {element, width: rendered.width, height: rendered.height};
+    }
+
+
+    function fitBook() {
+        const pages = state.visiblePages;
+        if (!pages.length) {
+            ui.viewport.style.width = '0';
+            ui.viewport.style.height = '0';
+            state.layout = null;
+            return;
+        }
+
+        // PDF.js getViewport({scale: 1}) already accounts for page rotation.
+        // All pages on the spread share a scale, but keep their individual dimensions.
+        const stageStyle = window.getComputedStyle(ui.stage);
+        const horizontalPadding = parseFloat(stageStyle.paddingLeft) + parseFloat(stageStyle.paddingRight);
+        const verticalPadding = parseFloat(stageStyle.paddingTop) + parseFloat(stageStyle.paddingBottom);
+        const availableWidth = Math.max(1, ui.stage.clientWidth - horizontalPadding);
+        const availableHeight = Math.max(1, ui.stage.clientHeight - verticalPadding);
+        const documentWidth = pages.reduce((sum, page) => sum + page.width, 0);
+        const documentHeight = Math.max(...pages.map((page) => page.height));
+        const scale = Math.min(availableWidth / documentWidth, availableHeight / documentHeight);
+        const width = documentWidth * scale;
+        const height = documentHeight * scale;
+
+        ui.viewport.style.width = `${width}px`;
+        ui.viewport.style.height = `${height}px`;
+        for (const page of pages) {
+            const pageWidth = page.width * scale;
+            const pageHeight = page.height * scale;
+            page.element.style.width = `${pageWidth}px`;
+            page.element.style.height = `${pageHeight}px`;
+            page.element.style.flex = `0 0 ${pageWidth}px`;
+        }
+
+        const leftWidth = pages[0].width * scale;
+        const seamHeight = Math.min(...pages.map((page) => page.height)) * scale;
+        ui.book.style.setProperty('--spine-offset', `${leftWidth}px`);
+        ui.book.style.setProperty('--spine-height', `${seamHeight}px`);
+        state.layout = {
+            width, height,
+            pages: pages.map((page) => ({width: page.width * scale, height: page.height * scale}))
+        };
     }
 
     async function renderBook(epoch = state.epoch) {
         if (!state.pdf || state.total < 1) {
             ui.book.replaceChildren();
             ui.book.classList.toggle('single', !isSpread());
+            state.visiblePages = [];
+            fitBook();
             refreshControls();
             return;
         }
+        const spread = isSpread();
         const start = spreadStart(state.page);
-        const numbers = isSpread() ? [start, start + 1] : [state.page];
-        const pages = await Promise.all(numbers.map(async (number, index) => {
-            const side = isSpread() ? (index ? 'right' : 'left') : 'single';
-            if (number > state.total) return blankPage(side);
-            return pdfPage(number, side, epoch);
-        }));
+        const numbers = spread ? [start, start + 1] : [state.page];
+        const pages = await Promise.all(numbers
+            .filter((number) => number <= state.total)
+            .map((number, index) => pdfPage(number, spread ? (index ? 'right' : 'left') : 'single', epoch)));
         if (epoch !== state.epoch) return;
-        ui.book.replaceChildren(...pages);
-        ui.book.classList.toggle('single', !isSpread());
+        if (spread && pages.length === 1) {
+            // Preserve the trailing blank leaf without imposing a fixed paper format.
+            const {width, height} = pages[0];
+            pages.push({element: blankPage('right'), width, height});
+        }
+        ui.book.replaceChildren(...pages.map((page) => page.element));
+        ui.book.classList.toggle('single', !spread);
+        state.visiblePages = pages;
+        fitBook();
         refreshControls();
     }
 
@@ -290,6 +348,10 @@
         clonedPage.className = 'page';
         clonedPage.setAttribute('aria-hidden', 'true');
         leaf.append(clonedPage);
+        leaf.style.left = `${original.offsetLeft}px`;
+        leaf.style.top = `${original.offsetTop}px`;
+        leaf.style.width = `${original.offsetWidth}px`;
+        leaf.style.height = `${original.offsetHeight}px`;
         return leaf;
     }
 
@@ -302,13 +364,23 @@
             return;
         }
         const direction = target > state.page ? 'next' : 'prev';
+        const previousLayout = state.layout;
         const leaf = animate && !reduceMotion.matches ? makeFlipLeaf(direction) : null;
         state.busy = true;
         state.page = target;
         refreshControls();
         try {
             await renderBook(state.epoch);
-            if (leaf) {
+            // If the next sheet has a different aspect ratio, don't fold a differently
+            // sized page over it; render the correctly sized page immediately.
+            const compatible = previousLayout && state.layout &&
+                Math.abs(previousLayout.width - state.layout.width) < 2 &&
+                Math.abs(previousLayout.height - state.layout.height) < 2 &&
+                previousLayout.pages.length === state.layout.pages.length &&
+                previousLayout.pages.every((page, index) =>
+                    Math.abs(page.width - state.layout.pages[index].width) < 2 &&
+                    Math.abs(page.height - state.layout.pages[index].height) < 2);
+            if (leaf && compatible) {
                 ui.book.append(leaf);
                 await new Promise((resolve) => {
                     let done = false;
@@ -471,8 +543,14 @@
         if (mobile !== lastMobile) {
             lastMobile = mobile;
             if (!state.busy) void renderBook();
-        } else refreshControls();
+        } else {
+            fitBook();
+            refreshControls();
+        }
     });
+    if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(() => fitBook()).observe(ui.stage);
+    }
     refreshControls();
     refreshFullscreenControls();
     const pdfURL = new URLSearchParams(window.location.search).get('file');
