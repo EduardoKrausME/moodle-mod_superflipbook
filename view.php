@@ -32,6 +32,7 @@ $id = required_param('id', PARAM_INT);
 $cm = get_coursemodule_from_id('superflipbook', $id, 0, false, MUST_EXIST);
 $course = get_course($cm->course);
 require_course_login($course, true, $cm);
+
 $context = context_module::instance($cm->id);
 require_capability('mod/superflipbook:view', $context);
 $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
@@ -48,31 +49,23 @@ $PAGE->set_cm($cm, $course);
 $PAGE->set_url('/mod/superflipbook/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($activity->name));
 $PAGE->set_heading($course->fullname);
-$PAGE->requires->js_call_amd('mod_superflipbook/reader', 'init', [[
-    'cmid' => $cm->id, 'pdfurl' => $pdfurl->out(false),
-    'worker' => (new moodle_url('/mod/superflipbook/amd/src/pdf.worker.js'))->out(false),
-    'watermark' => !empty($activity->watermark) ? fullname($USER) . ' - ' . $USER->id : '',
-]]);
 $completion = new completion_info($course);
 if ($completion->is_enabled($cm)) {
     $completion->set_module_viewed($cm);
 }
 course_module_viewed::create([
-    'objectid' => $activity->id, 'context' => $context,
+    'objectid' => $activity->id,
+    'context' => $context,
 ])->trigger();
-$status = reading_service::status($activity, $USER->id);
-$reportlink = has_capability('mod/superflipbook:viewreports', $context);
-$data = [
-    'title' => format_string($activity->name), 'intro' => format_module_intro('superflipbook',
-        $activity, $cm->id),
-    'allowdownload' => !empty($activity->allowdownload) || has_capability('mod/superflipbook:download', $context),
-    'allowprint' => !empty($activity->allowprint),
-    'pdfurl' => $pdfurl->out(false), 'showack' => !empty($activity->requireack),
-    'ackstatement' => $activity->ackstatement, 'acknowledged' => $status['acknowledged'],
-    'completed' => $status['completed'], 'reportlink' => $reportlink,
-    'reporturl' => (new moodle_url('/mod/superflipbook/report.php', ['id' => $cm->id]))->out(false),
-    'minpercentage' => (int)$activity->minpercentage, 'minseconds' => (int)$activity->minseconds,
-];
+
+$PAGE->requires->js_call_amd('mod_superflipbook/reader', 'init', [[
+    'cmid' => $cm->id, 'pdfurl' => $pdfurl->out(false),
+    'worker' => (new moodle_url('/mod/superflipbook/amd/src/pdf.worker.js'))->out(false),
+    'watermark' => !empty($activity->watermark) ? fullname($USER) . ' - ' . $USER->id : '',
+]]);
+
+$data = [];
+
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_superflipbook/reader', $data);
 echo $OUTPUT->footer();
