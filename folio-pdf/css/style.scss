@@ -180,6 +180,10 @@ button:not(:disabled):active {
 .book-viewport {
     position: relative;
     z-index: 1;
+    // The JavaScript uses the actual dimensions of the rendered PDF pages.
+    flex: 0 0 auto;
+    min-width: 0;
+    min-height: 0;
     width: 0;
     height: 0;
     max-width: 100%;
@@ -223,18 +227,16 @@ button:not(:disabled):active {
 }
 
 .page {
-    width: 50%;
-    flex: 0 0 50%;
+    // Width, height and flex-basis are set per page by fitBook().
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+    min-height: 0;
     position: relative;
     background: #faf8f0;
     overflow: hidden;
     box-shadow: inset 0 0 22px rgba(61, 48, 30, .06), 0 5px 15px rgba(3, 19, 13, .24);
     color: #34473d
-}
-
-.book-spread.single .page {
-    width: 100%;
-    flex: 0 0 100%
 }
 
 .page.page-left {
@@ -274,8 +276,8 @@ button:not(:disabled):active {
 .flip-leaf {
     position: absolute;
     top: 0;
+    // Position and dimensions come from the source page, not from a 50% split.
     height: 100%;
-    width: 50%;
     z-index: 12;
     transform-style: preserve-3d;
     backface-visibility: hidden;
@@ -293,7 +295,7 @@ button:not(:disabled):active {
 }
 
 .flip-leaf.turn-next {
-    left: 50%;
+    left: 0;
     transform-origin: left center;
     animation: leaf-next 430ms var(--ease) forwards
 }
@@ -302,11 +304,6 @@ button:not(:disabled):active {
     left: 0;
     transform-origin: right center;
     animation: leaf-prev 430ms var(--ease) forwards
-}
-
-.book-spread.single .flip-leaf {
-    width: 100%;
-    left: 0
 }
 
 .book-spread.single .flip-leaf.turn-next {
