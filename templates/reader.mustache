@@ -1,4 +1,115 @@
 {{!
     @template mod_superflipbook/reader
-    Moodle-native document reader. Labels come exclusively from language strings.
+    The Moodle PDF gallery and Fólio modal reader.
 }}
+<div class="mod-superflipbook" data-region="superflipbook">
+    <div class="sf-gallery-header">
+        <h2>{{#str}}gallery, mod_superflipbook{{/str}}</h2>
+        <p>{{#str}}gallerycount, mod_superflipbook, {{count}}{{/str}}</p>
+    </div>
+    <div class="sf-gallery" data-region="gallery">
+        {{#documents}}
+            <button type="button" class="sf-gallery-card" data-pdf-id="{{fileid}}"
+                    data-pdf-url="{{url}}" data-pdf-name="{{name}}">
+                <span class="sf-gallery-cover">
+                    {{#hasthumb}}<img src="{{thumburl}}" alt="" loading="lazy">{{/hasthumb}}
+                    {{^hasthumb}}<span class="sf-gallery-placeholder" aria-hidden="true">PDF</span>{{/hasthumb}}
+                </span>
+                <span class="sf-gallery-name">{{name}}</span>
+            </button>
+        {{/documents}}
+    </div>
+    <div class="sf-dialog-overlay" data-region="overlay" hidden>
+        <div class="sf-dialog" role="dialog" aria-modal="true" aria-label="{{#str}}pdftitle, mod_superflipbook{{/str}}">
+            <div class="app-shell" id="app">
+    <section class="reader-section" aria-label="Leitor de livros PDF">
+        <div class="reader-topline">
+            <div class="reader-publication">
+                <div><strong id="document-title">Documento PDF</strong><span id="document-details">AGUARDANDO PDF</span>
+                </div>
+            </div>
+            <div class="reader-toolbar" role="toolbar" aria-label="Ferramentas do leitor">
+                <button type="button" class="tool-button" id="mode-button" data-action="mode"
+                        title="Exibir uma página" aria-label="Exibir uma página" aria-pressed="true">
+                    <svg class="view-mode-spread" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                         focusable="false">
+                        <rect x="3.5" y="4" width="17" height="16" rx="1.5"></rect>
+                        <path d="M12 4v16"></path>
+                    </svg>
+                    <svg class="view-mode-single" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                         focusable="false" hidden>
+                        <rect x="6" y="4" width="12" height="16" rx="1.5"></rect>
+                    </svg>
+                </button>
+                <span class="toolbar-divider"></span>
+                <button type="button" class="tool-button" data-action="zoom-out" title="Diminuir zoom"
+                        aria-label="Diminuir zoom">−
+                </button>
+                <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
+                <button type="button" class="tool-button" data-action="zoom-in" title="Aumentar zoom"
+                        aria-label="Aumentar zoom">+
+                </button>
+                <span class="toolbar-divider"></span>
+                <button type="button" class="tool-button" id="fullscreen-button" data-action="fullscreen"
+                        title="Tela cheia" aria-label="Tela cheia" aria-pressed="false">
+                    <svg class="fullscreen-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                         focusable="false">
+                        <path d="M8 4H4v4M16 4h4v4M4 16v4h4M20 16v4h-4"></path>
+                    </svg>
+                    <svg class="fullscreen-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                         focusable="false" hidden>
+                        <path d="M4 9h5V4M20 9h-5V4M4 15h5v5M20 15h-5v5"></path>
+                    </svg>
+                </button>
+                <button type="button" class="tool-button sf-close-button" data-action="close"
+                        title="{{#str}}close, mod_superflipbook{{/str}}"
+                        aria-label="{{#str}}close, mod_superflipbook{{/str}}">×</button>
+            </div>
+        </div>
+        <div class="book-stage" id="book-stage">
+            <button type="button" class="turn-arrow turn-arrow-prev" data-action="prev"
+                    aria-label="Página anterior">‹
+            </button>
+            <div class="book-viewport" id="book-viewport">
+                <div class="book-spread" id="book-spread" aria-live="polite" aria-atomic="true"></div>
+            </div>
+            <button type="button" class="turn-arrow turn-arrow-next" data-action="next" aria-label="Próxima página">
+                ›
+            </button>
+            <div class="reader-loading" id="reader-loading" hidden><span class="loader"></span><span
+                    id="loading-message">Preparando as páginas...</span></div>
+        </div>
+        <div class="reader-bottomline">
+            <div class="paging-actions">
+                <button type="button" class="nav-button" data-action="first" aria-label="Primeira página"
+                        title="Primeira página">⇤
+                </button>
+                <span>Página</span><input id="page-number" type="number" min="1" max="1" value="1"
+                                          aria-label="Número da página" inputmode="numeric"><span>de <strong
+                    id="page-count">0</strong></span>
+                <button type="button" class="nav-button" data-action="last" aria-label="Última página"
+                        title="Última página">⇥
+                </button>
+            </div>
+            <div class="progress-control"><input type="range" id="page-progress" min="1" max="1" value="1"
+                                                 aria-label="Navegar pelas páginas"><span
+                    id="progress-label">0%</span></div>
+        </div>
+        <p class="reader-error" id="reader-error" role="alert" hidden></p>
+    </section>
+</div>
+
+            {{#requireack}}
+            <div class="sf-acknowledge">
+                <div>{{{ackstatement}}}</div>
+                <label><input type="checkbox" data-region="consent"> {{#str}}ackconfirm, mod_superflipbook{{/str}}</label>
+                <button type="button" data-action="acknowledge">{{#str}}acknowledge, mod_superflipbook{{/str}}</button>
+            </div>
+            {{/requireack}}
+        </div>
+    </div>
+</div>

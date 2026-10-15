@@ -120,7 +120,7 @@ class mod_superflipbook_mod_form extends moodleform_mod {
         if (!empty($this->current->instance)) {
             $draft = file_get_submitted_draft_itemid('pdf');
             file_prepare_draft_area($draft, $this->context->id, 'mod_superflipbook', 'content', 0,
-                ['maxfiles' => 1, 'accepted_types' => ['.pdf']]);
+                ['accepted_types' => ['.pdf']]);
             $defaultvalues['pdf'] = $draft;
         }
     }
@@ -130,6 +130,13 @@ class mod_superflipbook_mod_form extends moodleform_mod {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+        // No file count option is configured in filemanager due to a Moodle regression.
+        $draftid = isset($data['pdf']) ? (int)$data['pdf'] : 0;
+        $draftinfo = $draftid ? file_get_draft_area_info($draftid) : ['filecount' => 0];
+        $count = (int)$draftinfo['filecount'];
+        if ($count < 1 || $count > 30) {
+            $errors['pdf'] = get_string('pdfcountinvalid', 'mod_superflipbook');
+        }
         if ((int)$data['minpercentage'] < 0 || (int)$data['minpercentage'] > 100) {
             $errors['minpercentage'] = get_string('percentageerror', 'mod_superflipbook');
         }

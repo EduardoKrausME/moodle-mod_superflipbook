@@ -36,14 +36,33 @@ require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/superflipbook:view', $context);
 $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
-$files = get_file_storage()->get_area_files($context->id, 'mod_superflipbook', 'content', 0,
-    'sortorder, id', false);
-if (!$files) {
+$storage = get_file_storage();
+$files = $storage->get_area_files($context->id, 'mod_superflipbook', 'content', 0,
+    'sortorder ASC, id ASC', false);
+$documents = [];
+foreach ($files as $file) {
+    if ($file->is_directory() || $file->get_mimetype() !== 'application/pdf') {
+        continue;
+    }
+    $fileid = (int)$file->get_id();
+    $name = $file->get_filename();
+    $url = moodle_url::make_pluginfile_url($context->id, 'mod_superflipbook', 'content', 0,
+        $file->get_filepath(), $name);
+    $thumb = $storage->get_file($context->id, 'mod_superflipbook', 'thumb', 0,
+        '/', $fileid . '.jpg');
+    $thumburl = $thumb ? moodle_url::make_pluginfile_url($context->id, 'mod_superflipbook',
+        'thumb', 0, '/', $fileid . '.jpg') : null;
+    $documents[] = [
+        'fileid' => $fileid,
+        'name' => $name,
+        'url' => $url->out(false),
+        'thumburl' => $thumburl ? $thumburl->out(false) : '',
+        'hasthumb' => (bool)$thumb,
+    ];
+}
+if (!$documents) {
     throw new moodle_exception('missingpdf', 'mod_superflipbook');
 }
-$file = reset($files);
-$pdfurl = moodle_url::make_pluginfile_url($context->id, 'mod_superflipbook', 'content', 0,
-    $file->get_filepath(), $file->get_filename());
 
 $PAGE->set_cm($cm, $course);
 $PAGE->set_url('/mod/superflipbook/view.php', ['id' => $cm->id]);
@@ -58,13 +77,18 @@ course_module_viewed::create([
     'context' => $context,
 ])->trigger();
 
-$PAGE->requires->js_call_amd('mod_superflipbook/reader', 'init', [[
-    'cmid' => $cm->id, 'pdfurl' => $pdfurl->out(false),
-    'worker' => (new moodle_url('/mod/superflipbook/amd/src/pdf.worker.js'))->out(false),
-    'watermark' => !empty($activity->watermark) ? fullname($USER) . ' - ' . $USER->id : '',
+$PAGE->requires->js_call_amd('mod_superflipbook/app', 'init', [[
+    'cmid' => (int)$cm->id,
+    'sesskey' => sesskey(),
+    'thumbendpoint' => (new moodle_url('/mod/superflipbook/thumb.php'))->out(false),
+    'trackfirst' => true,
 ]]);
-
-$data = [];
+$data = [
+    'documents' => $documents,
+    'count' => count($documents),
+    'requireack' => !empty($activity->requireack),
+    'ackstatement' => format_text($activity->ackstatement, FORMAT_PLAIN),
+];
 
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('mod_superflipbook/reader', $data);

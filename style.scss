@@ -1,45 +1,10 @@
-:root {
+.mod-superflipbook {
     --paper: #F5F2EB;
     --text: #30342F;
     --ease: cubic-bezier(.2, .65, .25, 1)
 }
-* {
-    box-sizing: border-box
-}
-html {
-    scroll-behavior: smooth
-}
-body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--text);
-    font-family: Arial, Helvetica, sans-serif;
-    -webkit-font-smoothing: antialiased
-}
-button, input {
-    font: inherit
-}
-button {
-    cursor: pointer
-}
-button:focus-visible, input:focus-visible {
-    outline: 3px solid #BF7E4A;
-    outline-offset: 3px
-}
-button:disabled {
-    opacity: .3;
-    cursor: not-allowed
-}
-button:not(:disabled) {
-    transition: background .2s ease, transform .2s ease, color .2s ease
-}
-button:not(:disabled):active {
-    transform: scale(.96)
-}
-[hidden] {
-    display: none !important
-}
-.app-shell {
+.mod-superflipbook *, .mod-superflipbook *::before, .mod-superflipbook *::after { box-sizing: border-box }
+.mod-superflipbook .app-shell {
     max-width: 1480px;
     padding: 10px;
     margin: 0 auto;
@@ -428,7 +393,7 @@ button:not(:disabled):active {
         }
     }
     @media (max-width: 640px) {
-        .app-shell {
+        & {
             padding: 0 14px
         }
         .reader-topline {
@@ -527,4 +492,27 @@ button:not(:disabled):active {
             animation-iteration-count: 1 !important
         }
     }
+}
+.mod-superflipbook {
+    .sf-gallery-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+    .sf-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 18px; }
+    .sf-gallery-card { border: 1px solid #dce2dd; border-radius: 10px; padding: 10px; background: white;
+        text-align: left; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+    .sf-gallery-card:hover, .sf-gallery-card:focus-visible { border-color: #416351; box-shadow: 0 5px 24px #253b3222; }
+    .sf-gallery-cover { display: grid; place-items: center; aspect-ratio: 3 / 4; border-radius: 5px;
+        background: #f2f2ee; overflow: hidden; }
+    .sf-gallery-cover img { width: 100%; height: 100%; object-fit: contain; }
+    .sf-gallery-placeholder { font: bold 30px Georgia, serif; color: #88958d; }
+    .sf-gallery-name { overflow-wrap: anywhere; font-size: 14px; color: #30342f; }
+    .sf-dialog-overlay { position: fixed; inset: 0; z-index: 1050; background: #0b1717b8; display: flex; }
+    .sf-dialog { margin: 10px; width: calc(100% - 20px); height: calc(100% - 20px);
+        background: white; overflow: hidden; border-radius: 8px; }
+    .sf-dialog .app-shell { max-width: none; width: 100%; height: 100%; padding: 0; }
+    .sf-dialog .reader-section { display: flex; flex-direction: column; height: 100%; }
+    .sf-dialog .book-stage { flex: 1 1 auto; height: auto; min-height: 0; }
+    .sf-dialog .reader-topline, .sf-dialog .reader-bottomline { flex: none; }
+    .sf-close-button { font-size: 28px; }
+    .sf-acknowledge { position: absolute; left: 10px; bottom: 78px; z-index: 10;
+        max-width: 400px; border-radius: 6px; background: white; padding: 12px; box-shadow: 0 5px 20px #0002; }
+    [hidden] { display: none !important; }
 }

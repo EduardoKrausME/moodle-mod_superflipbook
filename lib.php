@@ -98,8 +98,10 @@ function superflipbook_update_instance($data, $mform = null) {
 function superflipbook_save_pdf($data) {
     $cm = get_coursemodule_from_id('superflipbook', $data->coursemodule, 0, false, MUST_EXIST);
     $context = context_module::instance($cm->id);
+    // A new draft may replace PDFs; thumbnails for old stored_file IDs are no longer valid.
+    get_file_storage()->delete_area_files($context->id, 'mod_superflipbook', 'thumb');
     file_save_draft_area_files($data->pdf, $context->id, 'mod_superflipbook', 'content', 0,
-        ['subdirs' => false, 'maxfiles' => 1, 'accepted_types' => ['.pdf']]);
+        ['subdirs' => false, 'maxfiles' => 30, 'accepted_types' => ['.pdf']]);
 }
 
 /**
@@ -154,13 +156,16 @@ function superflipbook_get_file_areas($course, $cm, $context) {
 function superflipbook_pluginfile($course, $cm, $context, $filearea, $args,
         $forcedownload, array $options = []) {
     global $DB;
-    if ($context->contextlevel !== CONTEXT_MODULE || $filearea !== 'content' || !$cm) {
+    if ($context->contextlevel !== CONTEXT_MODULE || !in_array($filearea, ['content', 'thumb'], true) || !$cm) {
         return false;
     }
     require_course_login($course, true, $cm);
     require_capability('mod/superflipbook:view', $context);
     $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
-    if ($forcedownload && !$activity->allowdownload &&
+    if ($filearea === 'thumb' && $forcedownload) {
+        return false;
+    }
+    if ($filearea === 'content' && $forcedownload &&
             !has_capability('mod/superflipbook:download', $context)) {
         return false;
     }
@@ -172,9 +177,26 @@ function superflipbook_pluginfile($course, $cm, $context, $filearea, $args,
     if ($filepath === '//') {
         $filepath = '/';
     }
-    $file = get_file_storage()->get_file($context->id, 'mod_superflipbook', 'content', 0, $filepath, $filename);
-    if (!$file || $file->is_directory() || $file->get_mimetype() !== 'application/pdf') {
+    $storage = get_file_storage();
+    $file = $storage->get_file($context->id, 'mod_superflipbook', $filearea, 0, $filepath, $filename);
+    if (!$file || $file->is_directory()) {
         return false;
+    }
+    if ($filearea === 'content' && $file->get_mimetype() !== 'application/pdf') {
+        return false;
+    }
+    if ($filearea === 'thumb') {
+        if (!preg_match('/^([1-9][0-9]*)\.jpg$/', $filename, $matches) ||
+                $file->get_mimetype() !== 'image/jpeg') {
+            return false;
+        }
+        $source = $storage->get_file_by_id((int)$matches[1]);
+        if (!$source || $source->get_contextid() != $context->id ||
+                $source->get_component() !== 'mod_superflipbook' ||
+                $source->get_filearea() !== 'content' ||
+                $source->get_mimetype() !== 'application/pdf') {
+            return false;
+        }
     }
     $options['cacheability'] = 'private';
     send_stored_file($file, 0, 0, $forcedownload, $options);
