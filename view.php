@@ -77,47 +77,11 @@ course_module_viewed::create([
     'context' => $context,
 ])->trigger();
 
-$readerstringids = [
-    'canvaserror',
-    'doublepage',
-    'exitfullscreen',
-    'fullscreen',
-    'fullscreenenterunsupported',
-    'fullscreenerror',
-    'fullscreenexitunsupported',
-    'openingpdf',
-    'operationdenied',
-    'page',
-    'pagenumber',
-    'pagerendererror',
-    'pages',
-    'pdfcontent',
-    'pdfdetailslabel',
-    'pdfinvalid',
-    'pdfjsloaderror',
-    'pdfloaderror',
-    'pdfopenfailed',
-    'pdfpagealt',
-    'pdfpasswordprompt',
-    'pdfurlerror',
-    'preparingpages',
-    'singlepage',
-    'thumbcreateerror',
-    'thumbuploaderror',
-    'unknownerror',
-];
-$readerstrings = [];
-foreach ($readerstringids as $stringid) {
-    // Preserve the Moodle {$a} placeholder for messages formatted in JavaScript.
-    $readerstrings[$stringid] = get_string($stringid, 'mod_superflipbook', '{$a}');
-}
-
 $PAGE->requires->js_call_amd('mod_superflipbook/app', 'init', [[
     'cmid' => (int)$cm->id,
     'sesskey' => sesskey(),
     'thumbendpoint' => (new moodle_url('/mod/superflipbook/thumb.php'))->out(false),
     'trackfirst' => true,
-    'strings' => $readerstrings,
 ]]);
 $data = [
     'documents' => $documents,
