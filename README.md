@@ -92,3 +92,17 @@ own upstream license.
 Report reproducible issues in [GitHub Issues](https://github.com/EduardoKrausME/moodle-mod_superflipbook/issues),
 including the Moodle and PHP versions, browser, relevant error messages, and whether the affected PDF is the first or a
 later item in the gallery.
+
+## Optional Moodle MCP integration
+
+With [local_mcp](https://github.com/EduardoKrausME/moodle-local_mcp) installed and enabled, the plugin automatically exposes the following tools through `classes/mcp/provider.php`:
+
+- **READ** `superflipbook_list_pdfs`: list document filenames, sizes, content hashes, the first tracked PDF and a state hash for concurrency checks. It requires `mod/superflipbook:manage` in the module context.
+- **WRITE** `superflipbook_create_activity`: create an activity in a course section with one Base64-encoded PDF. Requires Moodle course activity management and `mod/superflipbook:addinstance`.
+- **WRITE** `superflipbook_add_pdf`: append a new PDF to an existing library, with `expected_state_hash` from `superflipbook_list_pdfs`. Requires `mod/superflipbook:manage`.
+
+Both WRITE operations require the standard local_mcp preview and one-time confirmation. Send `filename` and `file_base64` containing only PDF content (or a `data:application/pdf;base64,` URI). The decoded PDF must be at most 40 MiB, have a safe `.pdf` filename and start with a PDF header. Content is never fetched from a remote URL. The existing Moodle filemanager limit of 30 PDFs still applies.
+
+The append operation is deliberately non-destructive: it never replaces a PDF, changes the first file, deletes thumbnails or increments the first document's reading revision. To replace PDFs or change reading requirements, use the native Moodle activity editor. Note that generated PDFs still need to be encoded and passed as tool arguments by the MCP client; attaching a PDF to a chat does not upload it automatically.
+
+The integration is optional and does not declare a hard dependency in `version.php`. When the Moodle plugin is updated, refresh the MCP connector to discover its tools.
