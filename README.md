@@ -95,7 +95,7 @@ later item in the gallery.
 
 ## Optional Moodle MCP integration
 
-With [local_mcp](https://github.com/EduardoKrausME/moodle-local_mcp) installed and enabled, the plugin automatically exposes the following tools through `classes/mcp/provider.php`:
+With [local_mcp](https://eduardokrausme.github.io/moodle-local_mcp/) installed and enabled, the plugin automatically exposes the following tools through `classes/mcp/provider.php`:
 
 - **READ** `superflipbook_list_pdfs`: list document filenames, sizes, content hashes, the first tracked PDF and a state hash for concurrency checks. It requires `mod/superflipbook:manage` in the module context.
 - **WRITE** `superflipbook_create_activity`: create an activity in a course section with one Base64-encoded PDF. Requires Moodle course activity management and `mod/superflipbook:addinstance`.
