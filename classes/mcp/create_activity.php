@@ -34,6 +34,8 @@ use stdClass;
  */
 final class create_activity extends activity_create_base {
     /**
+     * Return the Moodle activity module name.
+     *
      * @return string
      */
     protected function module_name(): string {
@@ -41,6 +43,8 @@ final class create_activity extends activity_create_base {
     }
 
     /**
+     * Declare the PDF-specific properties needed to create the activity.
+     *
      * @return array
      */
     protected function extra_properties(): array {
@@ -53,6 +57,8 @@ final class create_activity extends activity_create_base {
     }
 
     /**
+     * List mandatory PDF fields for the activity creation request.
+     *
      * @return array
      */
     protected function extra_required(): array {
@@ -60,6 +66,8 @@ final class create_activity extends activity_create_base {
     }
 
     /**
+     * Return the translated tool title.
+     *
      * @return string
      */
     public function get_title(): string {
@@ -67,6 +75,8 @@ final class create_activity extends activity_create_base {
     }
 
     /**
+     * Return the translated tool description.
+     *
      * @return string
      */
     public function get_description(): string {

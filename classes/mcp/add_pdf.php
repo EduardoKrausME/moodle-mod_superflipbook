@@ -35,6 +35,8 @@ use mod_superflipbook\local\mcp_pdf_service;
  */
 final class add_pdf extends base_tool {
     /**
+     * Return the registered MCP tool identifier.
+     *
      * @return string
      */
     public function get_name(): string {
@@ -42,6 +44,8 @@ final class add_pdf extends base_tool {
     }
 
     /**
+     * Return the translated tool title.
+     *
      * @return string
      */
     public function get_title(): string {
@@ -49,6 +53,8 @@ final class add_pdf extends base_tool {
     }
 
     /**
+     * Return the translated tool description.
+     *
      * @return string
      */
     public function get_description(): string {
@@ -56,6 +62,8 @@ final class add_pdf extends base_tool {
     }
 
     /**
+     * Specify the Moodle capability required to invoke this tool.
+     *
      * @return string
      */
     public function get_required_capability(): string {
@@ -63,6 +71,8 @@ final class add_pdf extends base_tool {
     }
 
     /**
+     * Describe and validate the accepted MCP input arguments.
+     *
      * @return array
      */
     public function get_input_schema(): array {
@@ -77,6 +87,8 @@ final class add_pdf extends base_tool {
     }
 
     /**
+     * Resolve and validate the requested course module context.
+     *
      * @param array $arguments
      * @return context
      */
@@ -112,6 +124,8 @@ final class add_pdf extends base_tool {
     }
 
     /**
+     * Execute the tool using the authenticated request parameters.
+     *
      * @param array $arguments
      * @param authenticated_identity $identity
      * @return array

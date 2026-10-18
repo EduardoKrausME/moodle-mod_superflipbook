@@ -12,7 +12,7 @@
             <button type="button" class="sf-gallery-card" data-pdf-id="{{fileid}}"
                     data-pdf-url="{{url}}" data-pdf-name="{{name}}">
                 <span class="sf-gallery-cover">
-                    {{#hasthumb}}<img src="{{thumburl}}" alt="" loading="lazy">{{/hasthumb}}
+                    {{#hasthumb}}<img src="{{{thumburl}}}" alt="" loading="lazy">{{/hasthumb}}
                     {{^hasthumb}}
                         <span class="sf-gallery-placeholder" aria-hidden="true">{{#str}}pdfplaceholder, mod_superflipbook{{/str}}</span>
                     {{/hasthumb}}

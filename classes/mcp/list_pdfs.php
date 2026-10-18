@@ -36,6 +36,8 @@ use moodle_url;
  */
 final class list_pdfs extends base_tool {
     /**
+     * Return the registered MCP tool identifier.
+     *
      * @return string
      */
     public function get_name(): string {
@@ -43,6 +45,8 @@ final class list_pdfs extends base_tool {
     }
 
     /**
+     * Return the translated tool title.
+     *
      * @return string
      */
     public function get_title(): string {
@@ -50,6 +54,8 @@ final class list_pdfs extends base_tool {
     }
 
     /**
+     * Return the translated tool description.
+     *
      * @return string
      */
     public function get_description(): string {
@@ -57,6 +63,8 @@ final class list_pdfs extends base_tool {
     }
 
     /**
+     * Describe and validate the accepted MCP input arguments.
+     *
      * @return array
      */
     public function get_input_schema(): array {
@@ -67,6 +75,8 @@ final class list_pdfs extends base_tool {
     }
 
     /**
+     * Specify the Moodle capability required to invoke this tool.
+     *
      * @return string
      */
     public function get_required_capability(): string {
@@ -74,6 +84,8 @@ final class list_pdfs extends base_tool {
     }
 
     /**
+     * Resolve and validate the requested course module context.
+     *
      * @param array $arguments
      * @return context
      */
@@ -83,6 +95,8 @@ final class list_pdfs extends base_tool {
     }
 
     /**
+     * Execute the tool using the authenticated request parameters.
+     *
      * @param array $arguments
      * @param authenticated_identity $identity
      * @return array
