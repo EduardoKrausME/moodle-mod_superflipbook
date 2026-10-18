@@ -29,10 +29,25 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  * Module form.
  */
 class mod_superflipbook_mod_form extends moodleform_mod {
+
+    /**
+     * Display the MCP notice before the activity form to avoid nested forms.
+     *
+     * @return void
+     */
+    public function display(): void {
+        global $OUTPUT, $PAGE;
+
+        echo \mod_superflipbook\mcp_banner::render($OUTPUT, $PAGE->url);
+        parent::display();
+    }
     /**
      * Build the form.
      */
     public function definition() {
+        global $PAGE;
+
+        \mod_superflipbook\mcp_banner::dismiss_if_requested($PAGE->url);
         $mform = $this->_form;
 
         $mform->addElement('header', 'general', get_string('general'));
