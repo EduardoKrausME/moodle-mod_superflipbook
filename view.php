@@ -66,6 +66,8 @@ if (!$documents) {
 
 $PAGE->set_cm($cm, $course);
 $PAGE->set_url('/mod/superflipbook/view.php', ['id' => $cm->id]);
+
+\mod_superflipbook\mcp_banner::dismiss_if_requested($PAGE->url);
 $PAGE->set_title(format_string($activity->name));
 $PAGE->set_heading($course->fullname);
 $completion = new completion_info($course);
@@ -121,5 +123,9 @@ $data = [
 ];
 
 echo $OUTPUT->header();
+if (\mod_superflipbook\mcp_banner::should_show()) {
+    echo \mod_superflipbook\mcp_banner::render($OUTPUT, $PAGE->url);
+}
+
 echo $OUTPUT->render_from_template('mod_superflipbook/reader', $data);
 echo $OUTPUT->footer();
