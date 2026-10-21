@@ -25,7 +25,6 @@
 namespace mod_superflipbook\external;
 
 use context_module;
-use core_text;
 use external_api;
 use external_function_parameters;
 use external_single_structure;
@@ -64,7 +63,7 @@ class save_bookmark extends external_api {
         self::validate_context($context);
         require_capability('mod/superflipbook:view', $context);
         $activity = $DB->get_record('superflipbook', ['id' => $cm->instance], '*', MUST_EXIST);
-        if ($page < 1 || $page > 20000 || core_text::strlen($note) > 2000) {
+        if ($page < 1 || $page > 20000 || strlen($note) > 2000) {
             throw new invalid_parameter_exception('Invalid bookmark');
         }
         $key = ['superflipbookid' => $activity->id, 'userid' => $USER->id, 'pagenum' => $page];
