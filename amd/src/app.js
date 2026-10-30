@@ -655,29 +655,36 @@ define(['core/ajax', 'core/notification'], function (Ajax, Notification) {
                 canvas.width = Math.ceil(viewport.width);
                 canvas.height = Math.ceil(viewport.height);
                 await page.render({canvasContext: canvas.getContext('2d', {alpha: false}), viewport}).promise;
-                const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', .77));
+                // Learners render a local cover; managers can persist a shared thumbnail.
+                const blob = cfg.canpersistthumb ?
+                    await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', .77)) : null;
+                const localThumbnailUrl = cfg.canpersistthumb ? null : canvas.toDataURL('image/jpeg', .77);
                 canvas.width = 0;
                 canvas.height = 0;
                 page.cleanup();
-                if (!blob) {
+                if (cfg.canpersistthumb && !blob) {
                     throw new Error(M.util.get_string('thumbcreateerror', 'mod_superflipbook'));
                 }
-                const form = new FormData();
-                form.append('id', String(cfg.cmid));
-                form.append('fileid', card.dataset.pdfId);
-                form.append('sesskey', cfg.sesskey);
-                form.append('image', blob, 'cover.jpg');
-                const response = await fetch(cfg.thumbendpoint, {
-                    method: 'POST',
-                    credentials: 'same-origin', body: form
-                });
-                if (!response.ok) {
-                    throw new Error(M.util.get_string('thumbuploaderror', 'mod_superflipbook'));
+                let thumbnailUrl = localThumbnailUrl;
+                if (cfg.canpersistthumb) {
+                    const form = new FormData();
+                    form.append('id', String(cfg.cmid));
+                    form.append('fileid', card.dataset.pdfId);
+                    form.append('sesskey', cfg.sesskey);
+                    form.append('image', blob, 'cover.jpg');
+                    const response = await fetch(cfg.thumbendpoint, {
+                        method: 'POST',
+                        credentials: 'same-origin', body: form
+                    });
+                    if (!response.ok) {
+                        throw new Error(M.util.get_string('thumbuploaderror', 'mod_superflipbook'));
+                    }
+                    const data = await response.json();
+                    thumbnailUrl = data.url;
                 }
-                const data = await response.json();
-                if (data.url) {
+                if (thumbnailUrl) {
                     const image = document.createElement('img');
-                    image.src = data.url;
+                    image.src = thumbnailUrl;
                     image.alt = '';
                     image.loading = 'lazy';
                     card.querySelector('.sf-gallery-cover').replaceChildren(image);

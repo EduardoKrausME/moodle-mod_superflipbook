@@ -112,6 +112,7 @@ $PAGE->requires->js_call_amd('mod_superflipbook/app', 'init', [[
     'cmid' => (int)$cm->id,
     'sesskey' => sesskey(),
     'thumbendpoint' => (new moodle_url('/mod/superflipbook/thumb.php'))->out(false),
+    'canpersistthumb' => has_capability('mod/superflipbook:manage', $context),
     'trackfirst' => true,
 ]]);
 $data = [

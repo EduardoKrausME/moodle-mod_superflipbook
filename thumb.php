@@ -31,7 +31,8 @@ $cm = get_coursemodule_from_id('superflipbook', $id, 0, false, MUST_EXIST);
 $course = get_course($cm->course);
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/superflipbook:view', $context);
+// Only activity managers may persist shared gallery thumbnails.
+require_capability('mod/superflipbook:manage', $context);
 $storage = get_file_storage();
 $pdf = $storage->get_file_by_id($fileid);
 if (!$pdf || $pdf->get_contextid() != $context->id ||

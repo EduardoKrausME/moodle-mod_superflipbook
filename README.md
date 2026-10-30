@@ -12,9 +12,9 @@ in Moodle's own file storage, and generated covers are saved so they do not need
 
 - Add **1 to 30 PDF files** to a single Super Flipbook activity.
 - Display the documents as a gallery of cards, with the filename and a cover image.
-- Generate missing covers from the **first page** with PDF.js in the browser, upload JPEG thumbnails to Moodle's private
-  file storage, and reuse them on subsequent requests. Existing thumbnails are invalidated when the activity's PDFs are
-  updated.
+- Generate missing covers from the **first page** with PDF.js in the browser. Activity managers can save JPEG thumbnails
+  to Moodle's private file storage for subsequent readers; learners see locally rendered covers without writing shared
+  files. Existing thumbnails are invalidated when the activity's PDFs are updated.
 - Open a selected PDF in a modal viewer with a **10 px margin** around the screen, plus a close button and Escape-key
   dismissal.
 - Read one page at a time, or switch to a two-page spread on larger screens. Navigate with previous/next, first/last,
@@ -49,9 +49,9 @@ The reader currently loads **PDF.js 4.10.38** and its worker at runtime from **j
 reach that CDN, and the Moodle site's Content Security Policy (CSP), network rules, and proxy configuration must permit
 the PDF.js module and worker. PDF rendering is not fully self-hosted or offline-ready in this release.
 
-PDF files and thumbnails are served through Moodle's authenticated `pluginfile.php` mechanism. Cover generation is
-performed by an authorized user's browser and uploaded to `thumb.php` with Moodle session-key validation; previously
-stored thumbnails are returned without regenerating them.
+PDF files and thumbnails are served through Moodle's authenticated `pluginfile.php` mechanism. Cover generation runs in the browser. Only users with `mod/superflipbook:manage` may upload a cover through `thumb.php`
+(with Moodle session-key validation). Learners render missing covers locally, while previously stored shared thumbnails
+are reused without regeneration.
 
 ## Using the activity
 
