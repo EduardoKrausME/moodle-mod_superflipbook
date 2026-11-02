@@ -2,6 +2,14 @@
 
 This changelog documents **only the two latest published GitHub releases** of `mod_superflipbook`. Each entry is based on the verified Git diff against the immediately preceding **published release** tag. Commits after `1.0.5` are not included.
 
+## 1.0.6 - 2026-10-30
+
+- Fixed authorization checks for thumbnail uploads in Super Flipbook.
+- Replaced legacy `core_text` usage and normalized language strings, PHP headers and Mustache templates.
+- Regenerated the app AMD build and refreshed historical release documentation.
+
+**Full comparison:** [1.0.5...1.0.6](https://github.com/EduardoKrausME/moodle-mod_superflipbook/compare/1.0.5...1.0.6)
+
 ## [1.0.5] - 2026-10-19
 
 Published: 2026-10-19 14:52:26 UTC.
